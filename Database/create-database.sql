@@ -35,8 +35,8 @@ GO
 
 /****** Table [OrderLines] ******/
 CREATE TABLE [OrderLines](
-	[OrderCustomerName] [nvarchar(50)] FOREIGN KEY REFERENCES [Orders] ([CustomerName]) NOT NULL,
-	[ProductName] [nvarchar(50)] FOREIGN KEY REFERENCES [Products] ([Name]) NOT NULL,
+	[OrderCustomerName] [nvarchar](50) FOREIGN KEY REFERENCES [Orders] ([CustomerName]) NOT NULL,
+	[ProductName] [nvarchar](50) FOREIGN KEY REFERENCES [Products] ([Name]) NOT NULL,
 	[Quantity] [int] NOT NULL,
 	CONSTRAINT [PK_OrderLines] PRIMARY KEY CLUSTERED 
 	(
