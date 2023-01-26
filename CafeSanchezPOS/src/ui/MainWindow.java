@@ -44,7 +44,7 @@ public class MainWindow extends JFrame {
 
 	private void openNewOrderDialog() {
 
-		CreateOrderDialog dialog = new CreateOrderDialog(OrderHandlingController.getInstance());
+		CreateOrderDialog dialog = new CreateOrderDialog(this.orderCtrl);
 		dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		dialog.setVisible(true);
 

@@ -42,12 +42,6 @@ public class CreateOrderDialog extends JDialog {
 		lstOrderlines.setModel(new DefaultListModel<Orderline>());
 	}
 
-//	private void update() {
-//
-////		NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance();
-////		txtTotalPrice.setText(currencyFormatter.format(this.order.getTotalPrice()));
-//	}
-
 	private void addSelectedProductToOrder() {
 
 		Product product = (Product) cboProducts.getSelectedItem();
@@ -57,7 +51,7 @@ public class CreateOrderDialog extends JDialog {
 
 		for (int i = 0; i < lstOrderlines.getModel().getSize(); i++) {
 			Orderline current = lstOrderlines.getModel().getElementAt(i);
-			if (current.getItem().getId() == product.getId()) {
+			if (current.getProduct().getName().equals(product.getName())) {
 				itemAdded = true;
 				current.setQuantity(current.getQuantity() + 1);
 			}
@@ -78,7 +72,7 @@ public class CreateOrderDialog extends JDialog {
 		
 		for (int i = 0; i < lstOrderlines.getModel().getSize(); i++) {
 			Orderline current = lstOrderlines.getModel().getElementAt(i);
-			result += current.getQuantity() * current.getItem().getPrice();
+			result += current.getQuantity() * current.getProduct().getPrice();
 		}
 		
 		float discount = txtDiscount.getText().isEmpty() ? 0 : Float.parseFloat(txtDiscount.getText())/100;
@@ -96,7 +90,7 @@ public class CreateOrderDialog extends JDialog {
 	private void ok() {
 
 		Order order = new Order(txtCustomerName.getText());
-		order.setDiscount(txtDiscount.getText().isEmpty() ? 0 : Float.parseFloat(txtDiscount.getText()));
+		order.setDiscount(txtDiscount.getText().isEmpty() ? 0 : Integer.parseInt(txtDiscount.getText()));
 
 		for (int i = 0; i < lstOrderlines.getModel().getSize(); i++) {
 			Orderline current = lstOrderlines.getModel().getElementAt(i);
@@ -120,7 +114,7 @@ public class CreateOrderDialog extends JDialog {
 		public Component getListCellRendererComponent(JList<? extends Orderline> list, Orderline value, int index,
 				boolean isSelected, boolean cellHasFocus) {
 
-			String cellText = value.getQuantity() + " " + value.getItem().getName();
+			String cellText = value.getQuantity() + " " + value.getProduct().getName();
 
 			return renderer.getListCellRendererComponent(list, cellText, index, isSelected, cellHasFocus);
 		}
@@ -140,7 +134,6 @@ public class CreateOrderDialog extends JDialog {
 			}
 			return renderer.getListCellRendererComponent(list, renderedText, index, isSelected, cellHasFocus);
 		}
-
 	}
 
 	private void initialize() {

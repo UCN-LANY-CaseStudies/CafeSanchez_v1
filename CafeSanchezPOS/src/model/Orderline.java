@@ -13,7 +13,7 @@ public class Orderline {
 		this.quantity = quantity;
 	}
 	
-	public Product getItem() {
+	public Product getProduct() {
 		return item;
 	}
 	

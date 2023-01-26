@@ -8,7 +8,7 @@ public class Order {
 
 	private String customerName;
 	private Date date;
-	private float discount;
+	private int discount;
 	private String status;
 	private List<Orderline> orderlines;
 
@@ -24,11 +24,15 @@ public class Order {
 		return date;
 	}
 
-	public float getDiscount() {
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public int getDiscount() {
 		return discount;
 	}
 
-	public void setDiscount(float discount) {
+	public void setDiscount(int discount) {
 		this.discount = discount;
 	}
 
@@ -42,6 +46,10 @@ public class Order {
 
 	public List<Orderline> getOrderlines() {
 		return orderlines;
+	}
+
+	public void addOrderline(Orderline ol) {
+		orderlines.add(ol);
 	}
 
 	public Order(String customerName) {
@@ -63,9 +71,9 @@ public class Order {
 
 	public float getTotalPrice() {
 		float result = 0;
-		for(Orderline ol : orderlines) {
-			result += ol.getQuantity() * ol.getItem().getPrice();
+		for (Orderline ol : orderlines) {
+			result += ol.getQuantity() * ol.getProduct().getPrice();
 		}
-		return result - (result * (discount/100));
+		return result - (result * (discount / 100));
 	}
 }

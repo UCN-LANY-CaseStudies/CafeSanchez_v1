@@ -1,78 +1,53 @@
 package businessLogic;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
+import java.util.stream.Collectors;
 
+import database.OrderDao;
+import database.ProductDao;
 import model.Order;
 import model.Product;
 
 public class OrderHandlingController {
-
-	// singleton
-	private static OrderHandlingController instance;
-
-	public static OrderHandlingController getInstance() {
-
-		if (instance == null) {
-
-			instance = new OrderHandlingController();
-		}
-		return instance;
+	
+	private OrderDao orderDao;
+	private ProductDao productDao;
+	
+	public OrderHandlingController(OrderDao orderDao, ProductDao productDao) { // constructor is private to enforce singleton
+		
+		this.productDao = productDao;
+		this.orderDao = orderDao;
 	}
 
-	private OrderHandlingController() { // controller is private to enforce singleton
-
-		// Loading products from file
-		try {
-			File productsFile = new File("Products.txt");
-			Scanner reader = new Scanner(productsFile);
-			int id = 0;
-			while (reader.hasNextLine()) {
-				String[] data = reader.nextLine().split(";");
-				
-				products.add(new Product(++id, data[0], Float.parseFloat(data[1])));				
-			}
-			reader.close();
-			
-		} catch (FileNotFoundException e) {
-			
-			e.printStackTrace();
-		}
+	public boolean createNewOrder(Order order) {
+		
+		Order createdOrder = orderDao.createOrder(order);
+		
+		return createdOrder.getStatus().equals(Order.STATUS_ACTIVE);
 	}
-
-	// data
-	private List<Product> products = new ArrayList<Product>();
-	private List<Order> orders = new ArrayList<Order>();
 
 	public boolean setOrderStatusToFinished(Order selectedOrder) {
 		
 		selectedOrder.setStatus(Order.STATUS_FINISHED);
-		return true;
-	}
-
-	public List<Order> getActiveOrders() {
-
-		List<Order> result = new ArrayList<Order>();
-		for (Order order : orders) {
-			if (order.getStatus() == Order.STATUS_ACTIVE) {
-				result.add(order);
-			}
-		}
-		return result;
-	}
-
-	public boolean createNewOrder(Order order) {
-		order.setStatus(Order.STATUS_ACTIVE);
-		orders.add(order);		
-		return true;
+		Order updatedOrder = orderDao.updateOrder(selectedOrder);
+		
+		return updatedOrder.getStatus().equals(Order.STATUS_FINISHED);
 	}
 
 	public List<Product> getAllProducts() {
 
-		return products;
+		return  productDao.getAll();
 	}
+
+	public List<Order> getActiveOrders() {
+		
+		List<Order> orders = orderDao.getAll();
+		
+		if(orders == null)
+			return null; 
+		
+		return orders.stream().filter(O -> O.getStatus().equals(Order.STATUS_ACTIVE)).collect(Collectors.toList());		
+	}
+	
 
 }
