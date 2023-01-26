@@ -1,0 +1,4 @@
+INDEX VERSION 1.131+C:\repos\case-studies\CafeSanchez\v1\.metadata\.plugins\org.eclipse.jdt.core
+1409738846.index
+706898121.index
+1865797976.index

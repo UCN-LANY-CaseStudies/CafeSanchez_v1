@@ -1,0 +1,7 @@
+Coffee;29.99
+Caffè Latte;34.99
+Espresso;29.99
+Hot Cocoa;40
+Cappuccino;34.99
+Americano;24.99
+Pumpkin Spice Latté;49.00
