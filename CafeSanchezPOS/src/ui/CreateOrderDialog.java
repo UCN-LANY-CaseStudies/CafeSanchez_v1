@@ -38,7 +38,7 @@ public class CreateOrderDialog extends JDialog {
 
 		this.ordersCtrl = ordersCtrl;
 
-		cboProducts.setModel(GuiHelpers.mapToComboBoxModel(ordersCtrl.getAllProducts()));
+		cboProducts.setModel(GuiHelpers.mapToComboBoxModel(ordersCtrl.getProducts()));
 		lstOrderlines.setModel(new DefaultListModel<Orderline>());
 	}
 
@@ -75,10 +75,8 @@ public class CreateOrderDialog extends JDialog {
 			result += current.getQuantity() * current.getProduct().getPrice();
 		}
 		
-		float discount = txtDiscount.getText().isEmpty() ? 0 : Float.parseFloat(txtDiscount.getText())/100;
-		
 		NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance();
-		txtTotalPrice.setText(currencyFormatter.format(result - (result * discount)));
+		txtTotalPrice.setText(currencyFormatter.format(result));
 	}
 
 	private void cancel() {
@@ -90,13 +88,12 @@ public class CreateOrderDialog extends JDialog {
 	private void ok() {
 
 		Order order = new Order(txtCustomerName.getText());
-		order.setDiscount(txtDiscount.getText().isEmpty() ? 0 : Integer.parseInt(txtDiscount.getText()));
-
+		
 		for (int i = 0; i < lstOrderlines.getModel().getSize(); i++) {
 			Orderline current = lstOrderlines.getModel().getElementAt(i);
 			order.getOrderlines().add(current);
 		}
-		ordersCtrl.createNewOrder(order);
+		ordersCtrl.createOrder(order);
 
 		this.accepted = true;
 		setVisible(false);
@@ -192,36 +189,36 @@ public class CreateOrderDialog extends JDialog {
 		scrollPane.setViewportView(lstOrderlines);
 
 		// order discount
-		JLabel lblOrderDiscount = new JLabel("Discout (%): ");
-		lblOrderDiscount.setBounds(10, 139, 75, 14);
-		contentPane.add(lblOrderDiscount);
+//		JLabel lblOrderDiscount = new JLabel("Discout (%): ");
+//		lblOrderDiscount.setBounds(10, 139, 75, 14);
+//		contentPane.add(lblOrderDiscount);
 
-		txtDiscount = new JTextField();
-		txtDiscount.setColumns(10);
-		txtDiscount.getDocument().addDocumentListener(new DocumentListener() {
+//		txtDiscount = new JTextField();
+//		txtDiscount.setColumns(10);
+//		txtDiscount.getDocument().addDocumentListener(new DocumentListener() {
+//
+//			@Override
+//			public void insertUpdate(DocumentEvent e) {
+//
+//				calculateTotalPrice();
+//			}
+//
+//			@Override
+//			public void removeUpdate(DocumentEvent e) {
+//
+//				calculateTotalPrice();
+//			}
+//
+//			@Override
+//			public void changedUpdate(DocumentEvent e) {
+//
+//				calculateTotalPrice();
+//			}
+//
+//		});
+//		txtDiscount.setBounds(110, 135, 200, 20);
 
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-
-				calculateTotalPrice();
-			}
-
-			@Override
-			public void removeUpdate(DocumentEvent e) {
-
-				calculateTotalPrice();
-			}
-
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-
-				calculateTotalPrice();
-			}
-
-		});
-		txtDiscount.setBounds(110, 135, 200, 20);
-
-		contentPane.add(txtDiscount);
+//		contentPane.add(txtDiscount);
 
 		// total price
 		JLabel lblTotalPrice = new JLabel("Total Price: ");

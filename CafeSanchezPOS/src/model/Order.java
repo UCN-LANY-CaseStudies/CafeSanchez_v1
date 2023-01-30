@@ -8,7 +8,6 @@ public class Order {
 
 	private String customerName;
 	private Date date;
-	private int discount;
 	private String status;
 	private List<Orderline> orderlines;
 
@@ -26,14 +25,6 @@ public class Order {
 
 	public void setDate(Date date) {
 		this.date = date;
-	}
-
-	public int getDiscount() {
-		return discount;
-	}
-
-	public void setDiscount(int discount) {
-		this.discount = discount;
 	}
 
 	public String getStatus() {
@@ -74,6 +65,6 @@ public class Order {
 		for (Orderline ol : orderlines) {
 			result += ol.getQuantity() * ol.getProduct().getPrice();
 		}
-		return result - (result * (discount / 100));
+		return result;
 	}
 }

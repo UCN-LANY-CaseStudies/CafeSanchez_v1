@@ -36,7 +36,7 @@ public class MainWindow extends JFrame {
 	private void finishSelectedOrder() {
 
 		Order selectedOrder = listActiveOrders.getSelectedValue();
-		if (selectedOrder != null && orderCtrl.setOrderStatusToFinished(selectedOrder)) {
+		if (selectedOrder != null && orderCtrl.finishOrder(selectedOrder)) {
 
 			reloadOrders();
 		}

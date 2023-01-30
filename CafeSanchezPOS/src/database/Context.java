@@ -15,7 +15,7 @@ public class Context {
 		ds.setUser("sa");  
 		ds.setPassword("P@$$w0rd");  
 		ds.setServerName("192.168.56.101");  
-		ds.setDatabaseName("CafeSanchez");  
+		ds.setDatabaseName("CafeSanchez_v1");  
 		ds.setEncrypt("False");
 		
 		return ds.getConnection();

@@ -1,4 +1,4 @@
-USE [CafeSanchez]
+USE [CafeSanchez_v1]
 GO 
 
 INSERT INTO Products ([Name], [Description], [Price]) VALUES ('Americano', 'Espresso shots topped with hot water create a light layer of crema culminating in this wonderfully rich cup with depth and nuance.', 22.50);

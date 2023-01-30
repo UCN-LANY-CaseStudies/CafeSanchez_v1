@@ -29,7 +29,7 @@ public class OrderDao {
 
 			Connection conn = context.getConnection();
 
-			String sql = "SELECT CustomerName, Discount, Status, Date FROM Orders ";
+			String sql = "SELECT CustomerName, Status, Date FROM Orders ";
 
 			PreparedStatement statement = conn.prepareStatement(sql);
 			ResultSet rs = statement.executeQuery();
@@ -37,9 +37,8 @@ public class OrderDao {
 			while (rs.next()) {
 				// mapping order
 				Order order = new Order(rs.getString(1));
-				order.setDiscount(rs.getInt(2));
-				order.setStatus(rs.getString(3));
-				order.setDate(rs.getDate(4));
+				order.setStatus(rs.getString(2));
+				order.setDate(rs.getDate(3));
 
 				addOrderlines(conn, order);
 
@@ -61,7 +60,7 @@ public class OrderDao {
 
 			Connection conn = context.getConnection();
 
-			String sqlSelectOrders = "SELECT CustomerName, Discount, Status, Date FROM Orders WHERE CustomerName = ? ";
+			String sqlSelectOrders = "SELECT CustomerName, Status, Date FROM Orders WHERE CustomerName = ? ";
 
 			PreparedStatement statement = conn.prepareStatement(sqlSelectOrders);
 			statement.setString(1, customerName);
@@ -71,9 +70,8 @@ public class OrderDao {
 			if (rsOrders.next()) {
 				// mapping order
 				Order order = new Order(rsOrders.getString(1));
-				order.setDiscount(rsOrders.getInt(2));
-				order.setStatus(rsOrders.getString(3));
-				order.setDate(rsOrders.getDate(4));
+				order.setStatus(rsOrders.getString(2));
+				order.setDate(rsOrders.getDate(3));
 
 				addOrderlines(conn, order);
 
@@ -98,12 +96,11 @@ public class OrderDao {
 			Connection conn = context.getConnection();
 			conn.setAutoCommit(false);
 
-			String sqlInsertOrder = "INSERT INTO Orders (Date, Status, Discount, CustomerName) VALUES (?, ?, ?, ?)";
+			String sqlInsertOrder = "INSERT INTO Orders (Date, Status, CustomerName) VALUES (?, ?, ?)";
 			PreparedStatement statementInsertOrder = conn.prepareStatement(sqlInsertOrder);
 			statementInsertOrder.setDate(1, new Date(System.currentTimeMillis()));
 			statementInsertOrder.setString(2, Order.STATUS_ACTIVE);
-			statementInsertOrder.setInt(3, order.getDiscount());
-			statementInsertOrder.setString(4, order.getCustomerName());
+			statementInsertOrder.setString(3, order.getCustomerName());
 
 			int rowsInserted = statementInsertOrder.executeUpdate();
 
@@ -150,17 +147,16 @@ public class OrderDao {
 			Connection conn = context.getConnection();
 			conn.setAutoCommit(false);
 
-			String sqlUpdateOrder = "UPDATE Orders SET Status = ?, Discount = ? WHERE CustomerName = ? ";
+			String sqlUpdateOrder = "UPDATE Orders SET Status = ? WHERE CustomerName = ? ";
 			// update order
 			PreparedStatement statement = conn.prepareStatement(sqlUpdateOrder);
 			statement.setString(1, order.getStatus());
-			statement.setInt(2, order.getDiscount());
-			statement.setString(3, order.getCustomerName());
+			statement.setString(2, order.getCustomerName());
 			int rowsUpdated = statement.executeUpdate();
 
 			if (rowsUpdated == 1) {
 				// clear orderlines
-				String sqlDeleteOrderlines = "DELETE FROM Orderlines WHERE CustomerName = ?";
+				String sqlDeleteOrderlines = "DELETE FROM Orderlines WHERE OrderCustomerName = ?";
 				PreparedStatement statementDeleteOrderlines = conn.prepareStatement(sqlDeleteOrderlines);
 				statementDeleteOrderlines.setString(1, order.getCustomerName());
 				statementDeleteOrderlines.execute();
@@ -208,9 +204,9 @@ public class OrderDao {
 
 		while (rsOrderlines.next()) {
 			// mapping product
-			Product p = new Product(rsOrderlines.getString(2), rsOrderlines.getString(3), rsOrderlines.getInt(4));
+			Product p = new Product(rsOrderlines.getString(1), rsOrderlines.getString(2), rsOrderlines.getInt(3));
 			// mapping orderlines
-			int quantity = rsOrderlines.getInt(5);
+			int quantity = rsOrderlines.getInt(4);
 
 			Orderline ol = new Orderline(quantity, p);
 			order.addOrderline(ol);

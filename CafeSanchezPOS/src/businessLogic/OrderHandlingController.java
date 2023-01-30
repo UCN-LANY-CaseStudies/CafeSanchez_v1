@@ -19,14 +19,14 @@ public class OrderHandlingController {
 		this.orderDao = orderDao;
 	}
 
-	public boolean createNewOrder(Order order) {
+	public boolean createOrder(Order order) {
 		
 		Order createdOrder = orderDao.createOrder(order);
 		
 		return createdOrder.getStatus().equals(Order.STATUS_ACTIVE);
 	}
 
-	public boolean setOrderStatusToFinished(Order selectedOrder) {
+	public boolean finishOrder(Order selectedOrder) {
 		
 		selectedOrder.setStatus(Order.STATUS_FINISHED);
 		Order updatedOrder = orderDao.updateOrder(selectedOrder);
@@ -34,7 +34,7 @@ public class OrderHandlingController {
 		return updatedOrder.getStatus().equals(Order.STATUS_FINISHED);
 	}
 
-	public List<Product> getAllProducts() {
+	public List<Product> getProducts() {
 
 		return  productDao.getAll();
 	}

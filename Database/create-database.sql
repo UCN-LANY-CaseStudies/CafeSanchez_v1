@@ -11,10 +11,10 @@ GO
 
 
 /****** Database [CafeSanchez] ******/
-CREATE DATABASE [CafeSanchez]
+CREATE DATABASE [CafeSanchez_v1]
 GO
 
-USE [CafeSanchez]
+USE [CafeSanchez_v1]
 GO
 
 /****** Table [Orders] ******/

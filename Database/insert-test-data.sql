@@ -1,4 +1,4 @@
-USE [CafeSanchez]
+USE [CafeSanchez_v1]
 GO
 
 DELETE FROM Orderlines;
