@@ -6,8 +6,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import javax.swing.*;
-import javax.swing.event.*;
-
 import businessLogic.OrderHandlingController;
 import model.Order;
 import model.Orderline;
@@ -22,7 +20,6 @@ public class CreateOrderDialog extends JDialog {
 	private JPanel contentPane;
 	private JPanel buttonPane;
 	private JTextField txtCustomerName;
-	private JTextField txtDiscount;
 	private JTextField txtTotalPrice;
 	private JComboBox<Product> cboProducts;
 	private JList<Orderline> lstOrderlines;
