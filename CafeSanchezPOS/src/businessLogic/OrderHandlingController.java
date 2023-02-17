@@ -3,8 +3,8 @@ package businessLogic;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import database.OrderDao;
-import database.ProductDao;
+import dataAccess.OrderDao;
+import dataAccess.ProductDao;
 import model.Order;
 import model.Product;
 
@@ -21,14 +21,14 @@ public class OrderHandlingController {
 
 	public boolean createOrder(Order order) {
 		
-		Order createdOrder = orderDao.createOrder(order);	
+		Order createdOrder = orderDao.create(order);	
 		
 		return createdOrder.getStatus().equals(Order.STATUS_NEW);
 	}
 
 	public List<Product> getProducts() {
 
-		return  productDao.getAll();
+		return  productDao.readAll();
 	}
 	
 	public boolean changeOrderState(Order order) {
@@ -47,10 +47,10 @@ public class OrderHandlingController {
 				return false;
 		}
 		if(order.getStatus().equals(Order.STATUS_FINISHED)) {
-			orderDao.deleteOrder(order);
+			orderDao.delete(order);
 		}	
 		else {
-			orderDao.updateOrder(order);			
+			orderDao.update(order);			
 		}
 
 		return true;
@@ -58,7 +58,7 @@ public class OrderHandlingController {
 
 	public List<Order> getUnfinishedOrders() {
 		
-		List<Order> orders = orderDao.getAll();
+		List<Order> orders = orderDao.readAll();
 		
 		if(orders == null)
 			return null; 

@@ -1,4 +1,4 @@
-package database;
+package dataAccess.sql;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -8,28 +8,21 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.microsoft.sqlserver.jdbc.SQLServerException;
-
+import dataAccess.OrderDao;
 import model.Order;
 import model.Orderline;
 import model.Product;
 
-public class OrderDao {
+public class SqlOrderDao extends SqlBaseDao implements OrderDao {
 
-	private Context context;
+	@Override
+	public List<Order> readAll() {
 
-	public OrderDao(Context context) {
-
-		this.context = context;
-	}
-
-	public List<Order> getAll() {
-
-		// TODO: Implement call to database that gets all orders from the Orders table
+		// Implement call to database that gets all orders from the Orders table
 		List<Order> result = new ArrayList<>();
 		try {
 
-			Connection conn = context.getConnection();
+			Connection conn = getConnection();
 
 			String sql = "SELECT CustomerName, Status, Date FROM Orders ";
 
@@ -54,48 +47,15 @@ public class OrderDao {
 		return result;
 	}
 
-	public Order getSingle(String customerName) {
-
-		// Implement call to database that gets a single order from the Orders table
-
-		try {
-
-			Connection conn = context.getConnection();
-
-			String sqlSelectOrders = "SELECT CustomerName, Status, Date FROM Orders WHERE CustomerName = ? ";
-
-			PreparedStatement statement = conn.prepareStatement(sqlSelectOrders);
-			statement.setString(1, customerName);
-
-			ResultSet rsOrders = statement.executeQuery();
-
-			if (rsOrders.next()) {
-				// mapping order
-				Order order = new Order(rsOrders.getString(1));
-				order.setStatus(rsOrders.getString(2));
-				order.setDate(rsOrders.getDate(3));
-
-				addOrderlines(conn, order);
-
-				return order;
-			}
-
-		} catch (SQLException e) {
-
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public Order createOrder(Order order) {
+	@Override
+	public Order create(Order order) {
 
 		// Implement call to database that creates an order in the Orders table and
 		// orderlines in the Orderlines table
 
 		try {
 
-			Connection conn = context.getConnection();
+			Connection conn = getConnection();
 			conn.setAutoCommit(false);
 
 			String sqlInsertOrder = "INSERT INTO Orders (Date, Status, CustomerName) VALUES (?, ?, ?)";
@@ -139,13 +99,14 @@ public class OrderDao {
 		return null;
 	}
 
-	public Order updateOrder(Order order) {
+	@Override
+	public boolean update(Order order) {
 
 		// Implement call to database that updates an order in the Orders table
 
 		try {
 
-			Connection conn = context.getConnection();
+			Connection conn = getConnection();
 			conn.setAutoCommit(false);
 
 			String sqlUpdateOrder = "UPDATE Orders SET Status = ? WHERE CustomerName = ? ";
@@ -175,7 +136,7 @@ public class OrderDao {
 
 				conn.commit();
 
-				return order;
+				return true;
 
 			} else {
 
@@ -187,7 +148,7 @@ public class OrderDao {
 			e.printStackTrace();
 		}
 
-		return null;
+		return false;
 	}
 
 	private void addOrderlines(Connection conn, Order order) throws SQLException {
@@ -213,13 +174,14 @@ public class OrderDao {
 		}
 	}
 
-	public void deleteOrder(Order order) {
+	@Override
+	public boolean delete(Order order) {
 
 		String deleteOrderlineSql = "DELETE FROM Orderlines WHERE OrderCustomerName = ?";
 		String deleteOrderSql = "DELETE FROM Orders WHERE CustomerName = ?";
 
 		try {
-			Connection conn = context.getConnection();
+			Connection conn = getConnection();
 			conn.setAutoCommit(false);
 			try {
 
@@ -236,14 +198,17 @@ public class OrderDao {
 
 				conn.commit();
 
+				return true;
+
 			} catch (SQLException e) {
 
 				conn.rollback();
 				e.printStackTrace();
 			}
 		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
+			
 			e1.printStackTrace();
 		}
+		return false;
 	}
 }

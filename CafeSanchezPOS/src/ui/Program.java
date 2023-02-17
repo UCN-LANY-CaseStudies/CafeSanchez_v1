@@ -1,22 +1,24 @@
 package ui;
 
+import java.time.DayOfWeek;
+
 import businessLogic.OrderHandlingController;
-import database.Context;
-import database.OrderDao;
-import database.ProductDao;
+import dataAccess.DaoFactory;
+import dataAccess.OrderDao;
+import dataAccess.ProductDao;
 
 public class Program {
 
 	public static void main(String[] args) {
 		
-		Context context = new Context();
+		DaoFactory daoFactory = new DaoFactory(DaoFactory.Type.Memory);
 
-		OrderDao orderDao = new OrderDao(context);
-		ProductDao productDao = new ProductDao(context);
-		
+		OrderDao orderDao = daoFactory.CreateOrderDao();
+		ProductDao productDao = daoFactory.CreateProductDao();
+
 		OrderHandlingController orderCtrl = new OrderHandlingController(orderDao, productDao);
-		
-		MainWindow main = new MainWindow(orderCtrl); 
+
+		MainWindow main = new MainWindow(orderCtrl);
 		main.setVisible(true);
 	}
 }

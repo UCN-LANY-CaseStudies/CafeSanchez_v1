@@ -1,4 +1,4 @@
-package database;
+package dataAccess.sql;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,18 +7,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import dataAccess.ProductDao;
 import model.Product;
 
-public class ProductDao {
+public class SqlProductDao extends SqlBaseDao implements ProductDao {
 	
-	private Context context;
-	
-	public ProductDao(Context context) {
-
-		this.context = context;
-	}
-
-	public List<Product> getAll(){
+	@Override
+	public List<Product> readAll(){
 		
 		// call to database that gets all products from the Products table
 		
@@ -26,7 +21,7 @@ public class ProductDao {
 		ArrayList<Product> result = new ArrayList<>();
 		
 		try {
-			Connection conn = context.getConnection();
+			Connection conn = getConnection();
 			PreparedStatement statement = conn.prepareStatement(sql);
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
@@ -45,5 +40,23 @@ public class ProductDao {
 			e.printStackTrace();
 		}		
 		return result;
+	}
+
+	@Override
+	public Product create(Product product) {
+		// not used
+		return product;
+	}
+
+	@Override
+	public boolean update(Product product) {
+		// not used
+		return false;
+	}
+
+	@Override
+	public boolean delete(Product product) {
+		// not used
+		return false;
 	}
 }
