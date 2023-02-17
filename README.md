@@ -74,9 +74,11 @@ The domain model allows the system to represent the relationship between these t
 
 ### Data Access
 
-**OrderDao Class**
+**OrderDao Interface**
 
-**ProductDao Class**
+**ProductDao Interface**
+
+![Data Access Layer][dataaccesslayer]
 
 ![E/R-Diagram][erdiagram]
 
@@ -86,3 +88,4 @@ The domain model allows the system to represent the relationship between these t
 [businesslayer]: /Graphics/business_layer.png "Business Logic Layer"
 [domainmodel]: /Graphics/model_layer.png "Domain model"
 [erdiagram]: /Graphics/ "Entity/Relation Diagram"
+[dataaccesslayer]: /Graphics/data_access_layer.png "Data Access Layer"
