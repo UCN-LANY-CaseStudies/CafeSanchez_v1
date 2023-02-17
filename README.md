@@ -17,6 +17,7 @@ A typical workflow is described by the owner like this:
 Through meetings with the café owner, the following additional information about the desired system is documented:  
 * The system must be able to keep track of several orders simultaneously but does not keep records of the sales. 
 * When an order is finished and paid for, it is deleted from the system. 
+* In case of a power failure, the order data must not be lost.
 * Also, there is no need for handling payments.
 
 As mentioned above, there are only two people working in the café and they are reasonably used to using IT systems. However, in certain times in a day there will be a lot of customers at the same time which causes a lot of hustle and bustle. In these situations it is important that the use of the system is as simple as possible, to prevent errors in the customers orders.
@@ -44,6 +45,8 @@ The following brief use cases are identified:
 The application is implemented as a desktop application based on a n-tier open architecture. The individual tiers are implemented as packages in the Java project.
 
 ![Architecture][architecture]
+
+To prevent data loss, the data is stored in a relational database placed on another computer and accessed via a local network. The details of the database is described in the Data Access section below.
 
 ### User Interface
 The user interface is designed to satisfy the Use Cases shown below and consists of two screens; a main window that shows the active orders that are currently being processed, and a modal window where details about a new customer order can be entered.
