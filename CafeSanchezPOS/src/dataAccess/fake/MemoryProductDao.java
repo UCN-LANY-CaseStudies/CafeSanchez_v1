@@ -3,35 +3,34 @@ package dataAccess.fake;
 import java.util.ArrayList;
 import java.util.List;
 
-import dataAccess.OrderDao;
-import model.Order;
+import dataAccess.ProductDao;
+import model.Product;
 
-public class FakeOrderDao implements OrderDao {
+public class MemoryProductDao implements ProductDao{
+
+	List<Product> products = new ArrayList<>();
 	
-	List<Order> orders = new ArrayList<>();
-
 	@Override
-	public Order create(Order order) {
+	public Product create(Product product) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<Order> readAll() {
+	public List<Product> readAll() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public boolean update(Order order) {
+	public boolean update(Product product) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean delete(Order order) {
+	public boolean delete(Product product) {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
 }

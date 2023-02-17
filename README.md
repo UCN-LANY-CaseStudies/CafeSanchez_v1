@@ -74,6 +74,12 @@ The domain model allows the system to represent the relationship between these t
 
 ### Data Access
 
+The Data Access Layer (DAL) is a component of an application that provides a bridge between the application and the data storage, allowing the application to interact with the data without knowing its exact method of storage. So, the purpose of the DAL is to abstract the database from the rest of the application, so that changes to the database structure or technology do not require changes to the application code.
+
+The DAL typically includes methods for creating, reading, updating, and deleting (CRUD) data in the data storage, but the actual storage should be hidden from the methods using the data. It can be designed to work with different data storage technologies, making it easier to switch storage technology if necessary. 
+
+In the Café Sanchez POS system, the DAL contains two interfaces; OrderDao and ProductDao. As the name implies they are data access objects, but since they are defined as interfaces, their implementation can be hidden from the methods using them, and it is possible to implement a dao class that communicates with an SQL Server or one that simply stores data in memory. It could also be useful to implement a fake dao class for test purposes.
+
 **OrderDao Interface**
 
 **ProductDao Interface**
@@ -82,7 +88,7 @@ The domain model allows the system to represent the relationship between these t
 
 ![E/R-Diagram][erdiagram]
 
-[architecture]: /Graphics/Architecture.svg "Architecture" 
+[architecture]: /Graphics/ "Architecture" 
 [mainwindow]: /Graphics/screen1.png "Main screen with active orders"
 [newordermodal]: /Graphics/screen2.png "Dialog for creating new orders"
 [businesslayer]: /Graphics/business_layer.png "Business Logic Layer"

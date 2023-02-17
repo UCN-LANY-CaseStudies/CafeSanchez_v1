@@ -1,7 +1,7 @@
 package dataAccess;
 
-import dataAccess.fake.FakeOrderDao;
-import dataAccess.fake.FakeProductDao;
+import dataAccess.fake.MemoryOrderDao;
+import dataAccess.fake.MemoryProductDao;
 import dataAccess.sql.SqlOrderDao;
 import dataAccess.sql.SqlProductDao;
 
@@ -18,7 +18,7 @@ public class DaoFactory {
 
 		switch (this.factoryType) {
 		case Memory:
-			return new FakeOrderDao();
+			return new MemoryOrderDao();
 		case Sql:
 			return new SqlOrderDao();
 		default:
@@ -30,7 +30,7 @@ public class DaoFactory {
 
 		switch (this.factoryType) {
 		case Memory:
-			return new FakeProductDao();
+			return new MemoryProductDao();
 		case Sql:
 			return new SqlProductDao();
 		default:
