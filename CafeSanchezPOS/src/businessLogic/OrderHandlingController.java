@@ -21,32 +21,43 @@ public class OrderHandlingController {
 
 	public boolean createOrder(Order order) {
 		
-		Order createdOrder = orderDao.createOrder(order);
+		Order createdOrder = orderDao.createOrder(order);	
 		
-		return createdOrder.getStatus().equals(Order.STATUS_ACTIVE);
-	}
-
-	public boolean finishOrder(Order selectedOrder) {
-		
-		selectedOrder.setStatus(Order.STATUS_FINISHED);
-		Order updatedOrder = orderDao.updateOrder(selectedOrder);
-		
-		return updatedOrder.getStatus().equals(Order.STATUS_FINISHED);
+		return createdOrder.getStatus().equals(Order.STATUS_NEW);
 	}
 
 	public List<Product> getProducts() {
 
 		return  productDao.getAll();
 	}
+	
+	public boolean changeOrderState(Order order) {
 
-	public List<Order> getActiveOrders() {
+		switch (order.getStatus()) {
+			case Order.STATUS_NEW:
+				order.setStatus(Order.STATUS_ACTIVE);
+				break;
+			case Order.STATUS_ACTIVE:
+				order.setStatus(Order.STATUS_READY);
+				break;
+			case Order.STATUS_READY:
+				order.setStatus(Order.STATUS_FINISHED);
+				break;
+			default:
+				return false;
+		}
+		orderDao.updateOrder(order);
+		return true;
+	}
+
+	public List<Order> getUnfinishedOrders() {
 		
 		List<Order> orders = orderDao.getAll();
 		
 		if(orders == null)
 			return null; 
 		
-		return orders.stream().filter(O -> O.getStatus().equals(Order.STATUS_ACTIVE)).collect(Collectors.toList());		
+		return orders.stream().filter(O -> !O.getStatus().equals(Order.STATUS_FINISHED)).collect(Collectors.toList());		
 	}
 	
 

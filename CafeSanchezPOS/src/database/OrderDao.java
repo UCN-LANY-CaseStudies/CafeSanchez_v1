@@ -99,13 +99,12 @@ public class OrderDao {
 			String sqlInsertOrder = "INSERT INTO Orders (Date, Status, CustomerName) VALUES (?, ?, ?)";
 			PreparedStatement statementInsertOrder = conn.prepareStatement(sqlInsertOrder);
 			statementInsertOrder.setDate(1, new Date(System.currentTimeMillis()));
-			statementInsertOrder.setString(2, Order.STATUS_ACTIVE);
+			statementInsertOrder.setString(2, Order.STATUS_NEW);
 			statementInsertOrder.setString(3, order.getCustomerName());
 
 			int rowsInserted = statementInsertOrder.executeUpdate();
 
 			if (rowsInserted == 1) {
-				order.setStatus(Order.STATUS_ACTIVE);
 
 				String sqlInsertOrderline = "INSERT INTO Orderlines (OrderCustomerName, ProductName, Quantity) VALUES (?, ?, ?)";
 
@@ -140,7 +139,7 @@ public class OrderDao {
 
 	public Order updateOrder(Order order) {
 
-		// TODO: Implement call to database that updates an order in the Orders table
+		// Implement call to database that updates an order in the Orders table
 
 		try {
 

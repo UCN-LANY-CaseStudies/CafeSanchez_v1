@@ -12,7 +12,8 @@ public class Order {
 	private List<Orderline> orderlines;
 
 	public static final String STATUS_NEW = "New";
-	public static final String STATUS_ACTIVE = "Active";
+	public static final String STATUS_ACTIVE = "Processing";
+	public static final String STATUS_READY = "Ready";
 	public static final String STATUS_FINISHED = "Finished";
 
 	public String getCustomerName() {
@@ -57,7 +58,7 @@ public class Order {
 		for (Orderline ol : orderlines) {
 			qty += ol.getQuantity();
 		}
-		return customerName + ": " + qty + " cups";
+		return customerName + ": " + qty + " cups - " + status;
 	}
 
 	public float getTotalPrice() {
