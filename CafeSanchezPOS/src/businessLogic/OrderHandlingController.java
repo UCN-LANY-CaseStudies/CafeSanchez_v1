@@ -46,7 +46,13 @@ public class OrderHandlingController {
 			default:
 				return false;
 		}
-		orderDao.updateOrder(order);
+		if(order.getStatus().equals(Order.STATUS_FINISHED)) {
+			orderDao.deleteOrder(order);
+		}	
+		else {
+			orderDao.updateOrder(order);			
+		}
+
 		return true;
 	}
 

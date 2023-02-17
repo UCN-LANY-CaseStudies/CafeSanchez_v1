@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.microsoft.sqlserver.jdbc.SQLServerException;
+
 import model.Order;
 import model.Orderline;
 import model.Product;
@@ -196,7 +198,6 @@ public class OrderDao {
 
 		// get orderlines
 		PreparedStatement statementSelectOrderlines = conn.prepareStatement(sqlSelectOrderlines);
-
 		statementSelectOrderlines.setString(1, order.getCustomerName());
 
 		ResultSet rsOrderlines = statementSelectOrderlines.executeQuery();
@@ -209,6 +210,40 @@ public class OrderDao {
 
 			Orderline ol = new Orderline(quantity, p);
 			order.addOrderline(ol);
+		}
+	}
+
+	public void deleteOrder(Order order) {
+
+		String deleteOrderlineSql = "DELETE FROM Orderlines WHERE OrderCustomerName = ?";
+		String deleteOrderSql = "DELETE FROM Orders WHERE CustomerName = ?";
+
+		try {
+			Connection conn = context.getConnection();
+			conn.setAutoCommit(false);
+			try {
+
+				// delete orderlines
+				PreparedStatement statementDeleteOrderlines = conn.prepareStatement(deleteOrderlineSql);
+				statementDeleteOrderlines.setString(1, order.getCustomerName());
+
+				statementDeleteOrderlines.execute();
+
+				PreparedStatement statementDeleteOrder = conn.prepareStatement(deleteOrderSql);
+				statementDeleteOrder.setString(1, order.getCustomerName());
+
+				statementDeleteOrder.execute();
+
+				conn.commit();
+
+			} catch (SQLException e) {
+
+				conn.rollback();
+				e.printStackTrace();
+			}
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 	}
 }
