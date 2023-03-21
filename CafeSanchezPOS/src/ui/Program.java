@@ -9,7 +9,7 @@ public class Program {
 
 	public static void main(String[] args) {
 		
-		DaoFactory daoFactory = new DaoFactory(DaoFactory.Type.Memory);
+		DaoFactory daoFactory = new DaoFactory(DaoFactory.Type.Sql);
 
 		OrderDao orderDao = daoFactory.CreateOrderDao();
 		ProductDao productDao = daoFactory.CreateProductDao();

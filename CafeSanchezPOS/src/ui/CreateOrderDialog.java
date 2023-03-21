@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import javax.swing.*;
 import businessLogic.OrderHandlingController;
 import model.Order;
-import model.Orderline;
+import model.OrderLine;
 import model.Product;
 
 public class CreateOrderDialog extends JDialog {
@@ -22,7 +22,7 @@ public class CreateOrderDialog extends JDialog {
 	private JTextField txtCustomerName;
 	private JTextField txtTotalPrice;
 	private JComboBox<Product> cboProducts;
-	private JList<Orderline> lstOrderlines;
+	private JList<OrderLine> lstOrderlines;
 	private JButton btnAddProduct;
 	private JButton btnOk;
 	private JButton btnCancel;
@@ -36,7 +36,7 @@ public class CreateOrderDialog extends JDialog {
 		this.ordersCtrl = ordersCtrl;
 
 		cboProducts.setModel(GuiHelpers.mapToComboBoxModel(ordersCtrl.getProducts()));
-		lstOrderlines.setModel(new DefaultListModel<Orderline>());
+		lstOrderlines.setModel(new DefaultListModel<OrderLine>());
 	}
 
 	private void addSelectedProductToOrder() {
@@ -44,10 +44,10 @@ public class CreateOrderDialog extends JDialog {
 		Product product = (Product) cboProducts.getSelectedItem();
 		boolean itemAdded = false;
 
-		ArrayList<Orderline> orderlines = new ArrayList<Orderline>();
+		ArrayList<OrderLine> orderlines = new ArrayList<OrderLine>();
 
 		for (int i = 0; i < lstOrderlines.getModel().getSize(); i++) {
-			Orderline current = lstOrderlines.getModel().getElementAt(i);
+			OrderLine current = lstOrderlines.getModel().getElementAt(i);
 			if (current.getProduct().getName().equals(product.getName())) {
 				itemAdded = true;
 				current.setQuantity(current.getQuantity() + 1);
@@ -55,7 +55,7 @@ public class CreateOrderDialog extends JDialog {
 			orderlines.add(current);
 		}
 		if (!itemAdded) {
-			Orderline ol = new Orderline(1, product);
+			OrderLine ol = new OrderLine(1, product);
 			orderlines.add(ol);
 		}
 		lstOrderlines.setModel(GuiHelpers.mapToListModel(orderlines));
@@ -68,7 +68,7 @@ public class CreateOrderDialog extends JDialog {
 		float result = 0;
 		
 		for (int i = 0; i < lstOrderlines.getModel().getSize(); i++) {
-			Orderline current = lstOrderlines.getModel().getElementAt(i);
+			OrderLine current = lstOrderlines.getModel().getElementAt(i);
 			result += current.getQuantity() * current.getProduct().getPrice();
 		}
 		
@@ -87,7 +87,7 @@ public class CreateOrderDialog extends JDialog {
 		Order order = new Order(txtCustomerName.getText());
 		
 		for (int i = 0; i < lstOrderlines.getModel().getSize(); i++) {
-			Orderline current = lstOrderlines.getModel().getElementAt(i);
+			OrderLine current = lstOrderlines.getModel().getElementAt(i);
 			order.getOrderlines().add(current);
 		}
 		ordersCtrl.createOrder(order);
@@ -100,12 +100,12 @@ public class CreateOrderDialog extends JDialog {
 		return accepted;
 	}
 
-	public class OrderLineCellRenderer implements ListCellRenderer<Orderline> {
+	public class OrderLineCellRenderer implements ListCellRenderer<OrderLine> {
 
 		DefaultListCellRenderer renderer = new DefaultListCellRenderer();
 
 		@Override
-		public Component getListCellRendererComponent(JList<? extends Orderline> list, Orderline value, int index,
+		public Component getListCellRendererComponent(JList<? extends OrderLine> list, OrderLine value, int index,
 				boolean isSelected, boolean cellHasFocus) {
 
 			String cellText = value.getQuantity() + " " + value.getProduct().getName();
@@ -179,7 +179,7 @@ public class CreateOrderDialog extends JDialog {
 		});
 		contentPane.add(btnAddProduct);
 
-		lstOrderlines = new JList<Orderline>();
+		lstOrderlines = new JList<OrderLine>();
 		lstOrderlines.setCellRenderer(new OrderLineCellRenderer());
 		lstOrderlines.setEnabled(false);
 		scrollPane.setBounds(110, 80, 200, 53);

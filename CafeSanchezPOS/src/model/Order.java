@@ -9,7 +9,7 @@ public class Order {
 	private String customerName;
 	private Date date;
 	private String status;
-	private List<Orderline> orderlines;
+	private List<OrderLine> orderlines;
 
 	public static final String STATUS_NEW = "New";
 	public static final String STATUS_ACTIVE = "Processing";
@@ -36,11 +36,11 @@ public class Order {
 		this.status = status;
 	}
 
-	public List<Orderline> getOrderlines() {
+	public List<OrderLine> getOrderlines() {
 		return orderlines;
 	}
 
-	public void addOrderline(Orderline ol) {
+	public void addOrderline(OrderLine ol) {
 		orderlines.add(ol);
 	}
 
@@ -49,13 +49,13 @@ public class Order {
 		this.customerName = customerName;
 		this.date = new Date();
 		this.status = STATUS_NEW;
-		this.orderlines = new ArrayList<Orderline>();
+		this.orderlines = new ArrayList<OrderLine>();
 	}
 
 	@Override
 	public String toString() {
 		int qty = 0;
-		for (Orderline ol : orderlines) {
+		for (OrderLine ol : orderlines) {
 			qty += ol.getQuantity();
 		}
 		return customerName + ": " + qty + " cups - " + status;
@@ -63,7 +63,7 @@ public class Order {
 
 	public float getTotalPrice() {
 		float result = 0;
-		for (Orderline ol : orderlines) {
+		for (OrderLine ol : orderlines) {
 			result += ol.getQuantity() * ol.getProduct().getPrice();
 		}
 		return result;

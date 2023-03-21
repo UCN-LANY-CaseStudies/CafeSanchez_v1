@@ -10,7 +10,7 @@ import java.util.List;
 
 import dataAccess.OrderDao;
 import model.Order;
-import model.Orderline;
+import model.OrderLine;
 import model.Product;
 
 public class SqlOrderDao extends SqlBaseDao implements OrderDao {
@@ -24,10 +24,15 @@ public class SqlOrderDao extends SqlBaseDao implements OrderDao {
 
 			Connection conn = getConnection();
 
-			String sql = "SELECT CustomerName, Status, Date FROM Orders ";
+			String selectOrdersSql = "SELECT CustomerName, Status, Date FROM Orders ";
+			String selectOrderLinesSql = "SELECT Products.Name, Products.Description, Products.Price, Quantity "
+									   + "FROM Orderlines "
+									   + "JOIN Products ON Products.Name = Orderlines.ProductName "
+									   + "WHERE OrderCustomerName = ? ";
 
-			PreparedStatement statement = conn.prepareStatement(sql);
-			ResultSet rs = statement.executeQuery();
+
+			PreparedStatement selectOrdersStatement = conn.prepareStatement(selectOrdersSql);
+			ResultSet rs = selectOrdersStatement.executeQuery();
 
 			while (rs.next()) {
 				// mapping order
@@ -35,7 +40,21 @@ public class SqlOrderDao extends SqlBaseDao implements OrderDao {
 				order.setStatus(rs.getString(2));
 				order.setDate(rs.getDate(3));
 
-				addOrderlines(conn, order);
+				// get order lines
+				PreparedStatement statementSelectOrderlines = conn.prepareStatement(selectOrderLinesSql);
+				statementSelectOrderlines.setString(1, order.getCustomerName());
+
+				ResultSet rsOrderLines = statementSelectOrderlines.executeQuery();
+
+				while (rsOrderLines.next()) {
+					// mapping product
+					Product p = new Product(rsOrderLines.getString(1), rsOrderLines.getString(2), rsOrderLines.getInt(3));
+					// mapping order lines
+					int quantity = rsOrderLines.getInt(4);
+
+					OrderLine ol = new OrderLine(quantity, p);
+					order.addOrderline(ol);
+				}
 
 				result.add(order);
 			}
@@ -70,7 +89,7 @@ public class SqlOrderDao extends SqlBaseDao implements OrderDao {
 
 				String sqlInsertOrderline = "INSERT INTO Orderlines (OrderCustomerName, ProductName, Quantity) VALUES (?, ?, ?)";
 
-				for (Orderline ol : order.getOrderlines()) {
+				for (OrderLine ol : order.getOrderlines()) {
 					PreparedStatement statementInsertOrderline = conn.prepareStatement(sqlInsertOrderline);
 					statementInsertOrderline.setString(1, order.getCustomerName());
 					statementInsertOrderline.setString(2, ol.getProduct().getName());
@@ -126,7 +145,7 @@ public class SqlOrderDao extends SqlBaseDao implements OrderDao {
 				// add orderlines
 				String sqlInsertOrderlines = "INSERT INTO Orderlines (OrderCustomerName, ProductName, Quantity) VALUES (?, ?, ?)";
 
-				for (Orderline ol : order.getOrderlines()) {
+				for (OrderLine ol : order.getOrderlines()) {
 					PreparedStatement statementInsertOrderline = conn.prepareStatement(sqlInsertOrderlines);
 					statementInsertOrderline.setString(1, order.getCustomerName());
 					statementInsertOrderline.setString(2, ol.getProduct().getName());
@@ -149,29 +168,6 @@ public class SqlOrderDao extends SqlBaseDao implements OrderDao {
 		}
 
 		return false;
-	}
-
-	private void addOrderlines(Connection conn, Order order) throws SQLException {
-
-		String sqlSelectOrderlines = "SELECT Products.Name, Products.Description, Products.Price, Quantity "
-				+ "FROM Orderlines " + "JOIN Products ON Products.Name = Orderlines.ProductName "
-				+ "WHERE OrderCustomerName = ? ";
-
-		// get orderlines
-		PreparedStatement statementSelectOrderlines = conn.prepareStatement(sqlSelectOrderlines);
-		statementSelectOrderlines.setString(1, order.getCustomerName());
-
-		ResultSet rsOrderlines = statementSelectOrderlines.executeQuery();
-
-		while (rsOrderlines.next()) {
-			// mapping product
-			Product p = new Product(rsOrderlines.getString(1), rsOrderlines.getString(2), rsOrderlines.getInt(3));
-			// mapping orderlines
-			int quantity = rsOrderlines.getInt(4);
-
-			Orderline ol = new Orderline(quantity, p);
-			order.addOrderline(ol);
-		}
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 package model;
 
-public class Orderline {
+public class OrderLine {
 
 	private int quantity;
 	private Product item;
@@ -21,7 +21,7 @@ public class Orderline {
 		this.item = item;
 	}
 	
-	public Orderline(int quantity, Product item) {
+	public OrderLine(int quantity, Product item) {
 		super();
 		this.quantity = quantity;
 		this.item = item;
