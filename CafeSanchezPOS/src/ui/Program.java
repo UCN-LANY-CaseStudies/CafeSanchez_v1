@@ -1,7 +1,5 @@
 package ui;
 
-import java.time.DayOfWeek;
-
 import businessLogic.OrderHandlingController;
 import dataAccess.DaoFactory;
 import dataAccess.OrderDao;
