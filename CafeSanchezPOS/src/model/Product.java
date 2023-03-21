@@ -3,9 +3,9 @@ package model;
 public class Product {
 	private String name;
 	private String description;
-	private float price;
+	private double price;
 
-	public Product(String name, String description, float price) {
+	public Product(String name, String description, double price) {
 		super();
 		this.name = name;
 		this.description = description;
@@ -20,7 +20,7 @@ public class Product {
 		return description;
 	}
 
-	public float getPrice() {
+	public double getPrice() {
 		return price;
 	}
 

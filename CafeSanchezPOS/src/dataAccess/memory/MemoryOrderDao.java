@@ -8,30 +8,33 @@ import model.Order;
 
 public class MemoryOrderDao implements OrderDao {
 	
-	List<Order> orders = new ArrayList<>();
+	private List<Order> orders = new ArrayList<>();
+
 
 	@Override
 	public Order create(Order order) {
-		// TODO Auto-generated method stub
-		return null;
+
+		orders.add(order);	
+		return order;
 	}
 
 	@Override
 	public List<Order> readAll() {
-		// TODO Auto-generated method stub
-		return null;
+
+		return orders;
 	}
 
 	@Override
 	public boolean update(Order order) {
-		// TODO Auto-generated method stub
-		return false;
+
+		return true;
 	}
 
 	@Override
 	public boolean delete(Order order) {
-		// TODO Auto-generated method stub
-		return false;
+
+		order.setStatus(Order.STATUS_FINISHED);
+		return true;
 	}
 
 }
