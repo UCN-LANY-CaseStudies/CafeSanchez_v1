@@ -17,7 +17,7 @@ public class SqlProductDao extends SqlBaseDao implements ProductDao {
 		
 		// call to database that gets all products from the Products table
 		
-		String sql = "SELECT * FROM Products";
+		String sql = "SELECT * FROM Products ORDER BY Name";
 		ArrayList<Product> result = new ArrayList<>();
 		
 		try {

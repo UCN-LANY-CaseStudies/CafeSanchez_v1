@@ -1,4 +1,4 @@
-package dataAccess.fake;
+package dataAccess.memory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,25 +12,25 @@ public class MemoryProductDao implements ProductDao{
 	
 	@Override
 	public Product create(Product product) {
-		// TODO Auto-generated method stub
+		// Not needed
 		return null;
 	}
 
 	@Override
 	public List<Product> readAll() {
-		// TODO Auto-generated method stub
-		return null;
+		// returns all products
+		return products;
 	}
 
 	@Override
 	public boolean update(Product product) {
-		// TODO Auto-generated method stub
+		// Not needed
 		return false;
 	}
 
 	@Override
 	public boolean delete(Product product) {
-		// TODO Auto-generated method stub
+		// Not needed
 		return false;
 	}
 }

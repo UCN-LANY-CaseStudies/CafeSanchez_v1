@@ -1,7 +1,7 @@
 package dataAccess;
 
-import dataAccess.fake.MemoryOrderDao;
-import dataAccess.fake.MemoryProductDao;
+import dataAccess.memory.MemoryOrderDao;
+import dataAccess.memory.MemoryProductDao;
 import dataAccess.sql.SqlOrderDao;
 import dataAccess.sql.SqlProductDao;
 
