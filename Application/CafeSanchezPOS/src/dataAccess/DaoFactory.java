@@ -19,7 +19,7 @@ public class DaoFactory {
 		switch (this.factoryType) {
 		case Memory:
 			return new MemoryOrderDao();
-		case Sql:
+		case SqlServer:
 			return new SqlOrderDao();
 		default:
 			throw new DaoException("Unknown dao type: [" + this.factoryType + "]");
@@ -31,7 +31,7 @@ public class DaoFactory {
 		switch (this.factoryType) {
 		case Memory:
 			return new MemoryProductDao();
-		case Sql:
+		case SqlServer:
 			return new SqlProductDao();
 		default:
 			throw new DaoException("Unknown dao type: [" + this.factoryType + "]");
@@ -40,6 +40,6 @@ public class DaoFactory {
 	
 	public enum Type{
 		Memory, 
-		Sql
+		SqlServer,
 	}
 }
