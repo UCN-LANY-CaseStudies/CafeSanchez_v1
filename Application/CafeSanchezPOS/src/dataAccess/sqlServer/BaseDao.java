@@ -1,11 +1,11 @@
-package dataAccess.sql;
+package dataAccess.sqlServer;
 
 import java.sql.Connection;
 
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 import com.microsoft.sqlserver.jdbc.SQLServerException;
 
-public abstract class SqlBaseDao {
+public abstract class BaseDao {
 
 	protected Connection getConnection() throws SQLServerException {
 

@@ -1,18 +1,19 @@
 package ui;
 
 import businessLogic.OrderHandlingController;
+import dataAccess.Dao;
 import dataAccess.DaoFactory;
-import dataAccess.OrderDao;
-import dataAccess.ProductDao;
+import model.Order;
+import model.Product;
 
 public class Program {
 
 	public static void main(String[] args) {
 		
-		DaoFactory daoFactory = new DaoFactory(DaoFactory.Type.SqlServer);
+		DaoFactory daoFactory = new DaoFactory(DaoFactory.For.SqlServer);
 
-		OrderDao orderDao = daoFactory.CreateOrderDao();
-		ProductDao productDao = daoFactory.CreateProductDao();
+		Dao<Order> orderDao = daoFactory.CreateOrderDao();
+		Dao<Product> productDao = daoFactory.CreateProductDao();
 
 		OrderHandlingController orderCtrl = new OrderHandlingController(orderDao, productDao);
 

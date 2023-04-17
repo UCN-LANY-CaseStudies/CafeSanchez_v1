@@ -3,10 +3,10 @@ package dataAccess.memory;
 import java.util.ArrayList;
 import java.util.List;
 
-import dataAccess.OrderDao;
+import dataAccess.Dao;
 import model.Order;
 
-public class MemoryOrderDao implements OrderDao {
+public class OrderDao implements Dao<Order> {
 	
 	private List<Order> orders = new ArrayList<>();
 
@@ -19,15 +19,15 @@ public class MemoryOrderDao implements OrderDao {
 	}
 
 	@Override
-	public List<Order> readAll() {
+	public List<Order> read() {
 
 		return orders;
 	}
 
 	@Override
-	public boolean update(Order order) {
+	public Order update(Order order) {
 
-		return true;
+		return order;
 	}
 
 	@Override

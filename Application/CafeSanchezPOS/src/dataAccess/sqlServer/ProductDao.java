@@ -1,4 +1,4 @@
-package dataAccess.sql;
+package dataAccess.sqlServer;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,13 +7,20 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import dataAccess.ProductDao;
+import dataAccess.Dao;
+import dataAccess.DaoException;
 import model.Product;
 
-public class SqlProductDao extends SqlBaseDao implements ProductDao {
+public class ProductDao extends BaseDao implements Dao<Product> {
 	
 	@Override
-	public List<Product> readAll(){
+	public Product create(Product product) {
+		// not used
+		throw new DaoException("Create product is not available");
+	}
+	
+	@Override
+	public List<Product> read(){
 		
 		// call to database that gets all products from the Products table
 		
@@ -43,20 +50,14 @@ public class SqlProductDao extends SqlBaseDao implements ProductDao {
 	}
 
 	@Override
-	public Product create(Product product) {
+	public Product update(Product product) {
 		// not used
-		return product;
-	}
-
-	@Override
-	public boolean update(Product product) {
-		// not used
-		return false;
+		throw new DaoException("Create product is not available");
 	}
 
 	@Override
 	public boolean delete(Product product) {
 		// not used
-		return false;
+		throw new DaoException("Create product is not available");
 	}
 }

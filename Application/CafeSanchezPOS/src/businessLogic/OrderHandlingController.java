@@ -3,17 +3,16 @@ package businessLogic;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import dataAccess.OrderDao;
-import dataAccess.ProductDao;
+import dataAccess.Dao;
 import model.Order;
 import model.Product;
 
 public class OrderHandlingController {
 	
-	private OrderDao orderDao;
-	private ProductDao productDao;
+	private Dao<Order> orderDao;
+	private Dao<Product> productDao;
 	
-	public OrderHandlingController(OrderDao orderDao, ProductDao productDao) { // constructor is private to enforce singleton
+	public OrderHandlingController(Dao<Order> orderDao, Dao<Product> productDao) { // constructor is private to enforce singleton
 		
 		this.productDao = productDao;
 		this.orderDao = orderDao;
@@ -28,7 +27,7 @@ public class OrderHandlingController {
 
 	public List<Product> getProducts() {
 
-		return  productDao.readAll();
+		return  productDao.read();
 	}
 	
 	public boolean changeOrderState(Order order) {
@@ -58,7 +57,7 @@ public class OrderHandlingController {
 
 	public List<Order> getUnfinishedOrders() {
 		
-		List<Order> orders = orderDao.readAll();
+		List<Order> orders = orderDao.read();
 		
 		if(orders == null)
 			return null; 

@@ -3,16 +3,17 @@ package dataAccess.memory;
 import java.util.ArrayList;
 import java.util.List;
 
-import dataAccess.ProductDao;
+import dataAccess.Dao;
+import dataAccess.DaoException;
 import model.Product;
 
-public class MemoryProductDao implements ProductDao{
+public class ProductDao implements Dao<Product>{
 
 	List<Product> products = new ArrayList<>();
 	
 	
 	
-	public MemoryProductDao() {
+	public ProductDao() {
 		super();
 
 		products.add(new Product("Americano", "Espresso shots topped with hot water create a light layer of crema culminating in this wonderfully rich cup with depth and nuance.", 32.50));
@@ -30,24 +31,24 @@ public class MemoryProductDao implements ProductDao{
 	@Override
 	public Product create(Product product) {
 		// Not needed
-		return null;
+		throw new DaoException("Create product is not available");
 	}
 
 	@Override
-	public List<Product> readAll() {
+	public List<Product> read() {
 		// returns all products
 		return products;
 	}
 
 	@Override
-	public boolean update(Product product) {
+	public Product update(Product product) {
 		// Not needed
-		return false;
+		throw new DaoException("Update product is not available");
 	}
 
 	@Override
 	public boolean delete(Product product) {
 		// Not needed
-		return false;
+		throw new DaoException("Delete product is not available");
 	}
 }

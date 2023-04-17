@@ -1,44 +1,42 @@
 package dataAccess;
 
-import dataAccess.memory.MemoryOrderDao;
-import dataAccess.memory.MemoryProductDao;
-import dataAccess.sql.SqlOrderDao;
-import dataAccess.sql.SqlProductDao;
+import model.Order;
+import model.Product;
 
 public class DaoFactory {
 
-	private Type factoryType;
+	private For factoryType;
 
-	public DaoFactory(Type factoryType) {
+	public DaoFactory(For factoryType) {
 
 		this.factoryType = factoryType;
 	}
 
-	public OrderDao CreateOrderDao() {
+	public Dao<Order> CreateOrderDao() {
 
 		switch (this.factoryType) {
 		case Memory:
-			return new MemoryOrderDao();
+			return new dataAccess.memory.OrderDao();
 		case SqlServer:
-			return new SqlOrderDao();
+			return new dataAccess.sqlServer.OrderDao();
 		default:
 			throw new DaoException("Unknown dao type: [" + this.factoryType + "]");
 		}
 	}
 
-	public ProductDao CreateProductDao() {
+	public Dao<Product> CreateProductDao() {
 
 		switch (this.factoryType) {
 		case Memory:
-			return new MemoryProductDao();
+			return new dataAccess.memory.ProductDao();
 		case SqlServer:
-			return new SqlProductDao();
+			return new dataAccess.sqlServer.ProductDao();
 		default:
 			throw new DaoException("Unknown dao type: [" + this.factoryType + "]");
 		}
 	}
 	
-	public enum Type{
+	public enum For{
 		Memory, 
 		SqlServer,
 	}

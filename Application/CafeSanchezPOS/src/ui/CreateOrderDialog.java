@@ -185,38 +185,6 @@ public class CreateOrderDialog extends JDialog {
 		scrollPane.setBounds(110, 80, 200, 53);
 		scrollPane.setViewportView(lstOrderlines);
 
-		// order discount
-//		JLabel lblOrderDiscount = new JLabel("Discout (%): ");
-//		lblOrderDiscount.setBounds(10, 139, 75, 14);
-//		contentPane.add(lblOrderDiscount);
-
-//		txtDiscount = new JTextField();
-//		txtDiscount.setColumns(10);
-//		txtDiscount.getDocument().addDocumentListener(new DocumentListener() {
-//
-//			@Override
-//			public void insertUpdate(DocumentEvent e) {
-//
-//				calculateTotalPrice();
-//			}
-//
-//			@Override
-//			public void removeUpdate(DocumentEvent e) {
-//
-//				calculateTotalPrice();
-//			}
-//
-//			@Override
-//			public void changedUpdate(DocumentEvent e) {
-//
-//				calculateTotalPrice();
-//			}
-//
-//		});
-//		txtDiscount.setBounds(110, 135, 200, 20);
-
-//		contentPane.add(txtDiscount);
-
 		// total price
 		JLabel lblTotalPrice = new JLabel("Total Price: ");
 		lblTotalPrice.setBounds(10, 159, 75, 14);
