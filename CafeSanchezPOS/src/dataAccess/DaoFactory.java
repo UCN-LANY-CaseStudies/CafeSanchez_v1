@@ -22,7 +22,7 @@ public class DaoFactory {
 		case Sql:
 			return new SqlOrderDao();
 		default:
-			throw new DataAccessException("Unknown dao type: [" + this.factoryType + "]");
+			throw new DaoException("Unknown dao type: [" + this.factoryType + "]");
 		}
 	}
 
@@ -34,7 +34,7 @@ public class DaoFactory {
 		case Sql:
 			return new SqlProductDao();
 		default:
-			throw new DataAccessException("Unknown dao type: [" + this.factoryType + "]");
+			throw new DaoException("Unknown dao type: [" + this.factoryType + "]");
 		}
 	}
 	
