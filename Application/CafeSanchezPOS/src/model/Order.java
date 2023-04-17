@@ -36,12 +36,12 @@ public class Order {
 		this.status = status;
 	}
 
-	public List<OrderLine> getOrderlines() {
+	public List<OrderLine> getOrderLines() {
 		return orderlines;
 	}
 
-	public void addOrderline(OrderLine ol) {
-		orderlines.add(ol);
+	public void setOrderLines(List<OrderLine> value) {
+		this.orderlines = value;
 	}
 
 	public Order(String customerName) {

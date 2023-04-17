@@ -12,7 +12,7 @@ public class OrderHandlingController {
 	private Dao<Order> orderDao;
 	private Dao<Product> productDao;
 	
-	public OrderHandlingController(Dao<Order> orderDao, Dao<Product> productDao) { // constructor is private to enforce singleton
+	public OrderHandlingController(Dao<Order> orderDao, Dao<Product> productDao) { 
 		
 		this.productDao = productDao;
 		this.orderDao = orderDao;
@@ -51,7 +51,6 @@ public class OrderHandlingController {
 		else {
 			orderDao.update(order);			
 		}
-
 		return true;
 	}
 

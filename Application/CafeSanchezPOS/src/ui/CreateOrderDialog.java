@@ -1,11 +1,27 @@
 package ui;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.ListCellRenderer;
+
 import businessLogic.OrderHandlingController;
 import model.Order;
 import model.OrderLine;
@@ -19,23 +35,37 @@ public class CreateOrderDialog extends JDialog {
 
 	private JPanel contentPane;
 	private JPanel buttonPane;
+	private JScrollPane scrollPane;
 	private JTextField txtCustomerName;
 	private JTextField txtTotalPrice;
 	private JComboBox<Product> cboProducts;
 	private JList<OrderLine> lstOrderlines;
+	private JLabel lblOrderItems;
 	private JButton btnAddProduct;
 	private JButton btnOk;
 	private JButton btnCancel;
+	
+	public String getCustomerName() {
+		return txtCustomerName.getText();
+	}
+	
+	public List<OrderLine> getOrderlines(){
+		
+		ArrayList<OrderLine> result = new ArrayList<>();
+		
+		for (int i = 0; i < lstOrderlines.getModel().getSize(); i++) {
+			OrderLine current = lstOrderlines.getModel().getElementAt(i);
+			result.add(current);
+		}
+		
+		return result;
+	}
 
-	private final OrderHandlingController ordersCtrl;
-
-	public CreateOrderDialog(OrderHandlingController ordersCtrl) {
+	public CreateOrderDialog(List<Product> products) {
 
 		initialize();
 
-		this.ordersCtrl = ordersCtrl;
-
-		cboProducts.setModel(GuiHelpers.mapToComboBoxModel(ordersCtrl.getProducts()));
+		cboProducts.setModel(GuiHelpers.mapToComboBoxModel(products));
 		lstOrderlines.setModel(new DefaultListModel<OrderLine>());
 	}
 
@@ -59,7 +89,7 @@ public class CreateOrderDialog extends JDialog {
 			orderlines.add(ol);
 		}
 		lstOrderlines.setModel(GuiHelpers.mapToListModel(orderlines));
-		lstOrderlines.updateUI();
+		//lstOrderlines.updateUI();
 
 		calculateTotalPrice();
 	}
@@ -83,14 +113,6 @@ public class CreateOrderDialog extends JDialog {
 	}
 
 	private void ok() {
-
-		Order order = new Order(txtCustomerName.getText());
-		
-		for (int i = 0; i < lstOrderlines.getModel().getSize(); i++) {
-			OrderLine current = lstOrderlines.getModel().getElementAt(i);
-			order.getOrderlines().add(current);
-		}
-		ordersCtrl.createOrder(order);
 
 		this.accepted = true;
 		setVisible(false);
@@ -142,7 +164,7 @@ public class CreateOrderDialog extends JDialog {
 		getContentPane().add(contentPane, BorderLayout.CENTER);
 		contentPane.setLayout(null);
 
-		JScrollPane scrollPane = new JScrollPane();
+		scrollPane = new JScrollPane();
 		contentPane.add(scrollPane, BorderLayout.CENTER);
 
 		// customer name
@@ -157,7 +179,7 @@ public class CreateOrderDialog extends JDialog {
 		contentPane.add(txtCustomerName);
 
 		// order items
-		JLabel lblOrderItems = new JLabel("Items: ");
+		lblOrderItems = new JLabel("Items: ");
 		lblOrderItems.setBounds(10, 60, 70, 14);
 		contentPane.add(lblOrderItems);
 

@@ -2,8 +2,6 @@ package dataAccess;
 
 import java.util.List;
 
-import model.Order;
-
 public interface Dao<TEntity> {
 
 	TEntity create(TEntity order) throws DaoException;

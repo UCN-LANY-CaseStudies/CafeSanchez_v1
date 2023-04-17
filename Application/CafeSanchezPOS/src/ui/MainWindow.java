@@ -3,13 +3,18 @@ package ui;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import businessLogic.OrderHandlingController;
 import model.Order;
+import model.OrderLine;
+import model.Product;
 
 public class MainWindow extends JFrame {
 
@@ -29,34 +34,60 @@ public class MainWindow extends JFrame {
 		this.orderCtrl = orderCtrl;
 
 		initialize();
-		
+
 		reloadOrders();
 	}
 
 	private void changeOrderState() {
-		Order selectedOrder = listActiveOrders.getSelectedValue();
-		if (selectedOrder != null && orderCtrl.changeOrderState(selectedOrder)) {
 
-			reloadOrders();
-		}
+		Executors.newSingleThreadExecutor().execute(new Runnable() {
+			@Override
+			public void run() {
+				Order selectedOrder = listActiveOrders.getSelectedValue();
+				if (selectedOrder != null && orderCtrl.changeOrderState(selectedOrder)) {
+
+					reloadOrders();
+				}
+			}
+		});
 	}
 
 	private void openNewOrderDialog() {
 
-		CreateOrderDialog dialog = new CreateOrderDialog(orderCtrl);
+		List<Product> products = orderCtrl.getProducts();
+
+		CreateOrderDialog dialog = new CreateOrderDialog(products);
 		dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		dialog.setVisible(true);
 
 		if (dialog.isAccepted()) {
-			reloadOrders();
+
+			Executors.newSingleThreadExecutor().execute(new Runnable() {
+
+				@Override
+				public void run() {
+
+					Order order = new Order(dialog.getCustomerName());
+					order.setOrderLines(dialog.getOrderlines());
+					orderCtrl.createOrder(order);
+
+					reloadOrders();
+				}
+			});
 		}
 	}
 
 	private void reloadOrders() {
-		List<Order> activeOrders = orderCtrl.getUnfinishedOrders();
-		if (activeOrders != null)
-			listActiveOrders.setModel(GuiHelpers.mapToListModel(activeOrders));
-		listActiveOrders.updateUI();
+
+		Executors.newSingleThreadExecutor().execute(new Runnable() {
+			@Override
+			public void run() {
+				List<Order> activeOrders = orderCtrl.getUnfinishedOrders();
+				if (activeOrders != null)
+					listActiveOrders.setModel(GuiHelpers.mapToListModel(activeOrders));
+				// listActiveOrders.updateUI();
+			}
+		});
 	}
 
 	private void initialize() {
@@ -74,20 +105,22 @@ public class MainWindow extends JFrame {
 		FlowLayout layout = (FlowLayout) panel.getLayout();
 		layout.setAlignment(FlowLayout.RIGHT);
 
-		contentPane.add(panel, BorderLayout.SOUTH);
 		contentPane.add(scrollPane, BorderLayout.CENTER);
+		contentPane.add(panel, BorderLayout.SOUTH);
 
 		// orderlist
 		listActiveOrders = new JList<>();
 		listActiveOrders.addListSelectionListener(new ListSelectionListener() {
-			
+
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
 
 				Order selectedOrder = listActiveOrders.getSelectedValue();
 				btnProcessOrder.setEnabled(selectedOrder != null && selectedOrder.getStatus().equals(Order.STATUS_NEW));
-				btnOrderReady.setEnabled(selectedOrder != null && selectedOrder.getStatus().equals(Order.STATUS_ACTIVE));
-				btnFinishOrder.setEnabled(selectedOrder != null && selectedOrder.getStatus().equals(Order.STATUS_READY));
+				btnOrderReady
+						.setEnabled(selectedOrder != null && selectedOrder.getStatus().equals(Order.STATUS_ACTIVE));
+				btnFinishOrder
+						.setEnabled(selectedOrder != null && selectedOrder.getStatus().equals(Order.STATUS_READY));
 			}
 		});
 		scrollPane.setViewportView(listActiveOrders);
@@ -96,19 +129,19 @@ public class MainWindow extends JFrame {
 		btnNewOrder = new JButton("New");
 		btnNewOrder.addActionListener(e -> openNewOrderDialog());
 		panel.add(btnNewOrder);
-		
+
 		// process order button
 		btnProcessOrder = new JButton("Process");
 		btnProcessOrder.setEnabled(false);
 		btnProcessOrder.addActionListener(e -> changeOrderState());
 		panel.add(btnProcessOrder);
-		
+
 		// order ready
 		btnOrderReady = new JButton("Ready");
 		btnOrderReady.setEnabled(false);
 		btnOrderReady.addActionListener(e -> changeOrderState());
 		panel.add(btnOrderReady);
-		
+
 		// finish order button
 		btnFinishOrder = new JButton("Finish");
 		btnFinishOrder.setEnabled(false);

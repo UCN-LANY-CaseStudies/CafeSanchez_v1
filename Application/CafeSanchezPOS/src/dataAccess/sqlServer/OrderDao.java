@@ -53,7 +53,7 @@ public class OrderDao extends BaseDao implements Dao<Order> {
 					int quantity = rsOrderLines.getInt(4);
 
 					OrderLine ol = new OrderLine(quantity, p);
-					order.addOrderline(ol);
+					order.getOrderLines().add(ol);
 				}
 
 				result.add(order);
@@ -63,7 +63,7 @@ public class OrderDao extends BaseDao implements Dao<Order> {
 
 		} catch (SQLException e) {
 
-			e.printStackTrace();
+			//e.printStackTrace();
 			throw new DaoException("An error occurred reading orders", e);
 		}
 	}
@@ -93,7 +93,7 @@ public class OrderDao extends BaseDao implements Dao<Order> {
 
 					String sqlInsertOrderline = "INSERT INTO Orderlines (OrderCustomerName, ProductName, Quantity) VALUES (?, ?, ?)";
 
-					for (OrderLine ol : order.getOrderlines()) {
+					for (OrderLine ol : order.getOrderLines()) {
 						PreparedStatement statementInsertOrderline = conn.prepareStatement(sqlInsertOrderline);
 						statementInsertOrderline.setString(1, order.getCustomerName());
 						statementInsertOrderline.setString(2, ol.getProduct().getName());
@@ -113,7 +113,7 @@ public class OrderDao extends BaseDao implements Dao<Order> {
 
 		} catch (Exception e) {
 
-			e.printStackTrace();
+			//e.printStackTrace();
 			throw new DaoException("An error occurred creating an order", e);
 		}
 	}
@@ -146,7 +146,7 @@ public class OrderDao extends BaseDao implements Dao<Order> {
 					// add orderlines
 					String sqlInsertOrderlines = "INSERT INTO Orderlines (OrderCustomerName, ProductName, Quantity) VALUES (?, ?, ?)";
 
-					for (OrderLine ol : order.getOrderlines()) {
+					for (OrderLine ol : order.getOrderLines()) {
 						PreparedStatement statementInsertOrderline = conn.prepareStatement(sqlInsertOrderlines);
 						statementInsertOrderline.setString(1, order.getCustomerName());
 						statementInsertOrderline.setString(2, ol.getProduct().getName());
@@ -164,7 +164,7 @@ public class OrderDao extends BaseDao implements Dao<Order> {
 
 		} catch (Exception e) {
 
-			e.printStackTrace();
+			//e.printStackTrace();
 			throw new DaoException("An error occurred updating an order", e);
 		}
 	}
@@ -204,7 +204,7 @@ public class OrderDao extends BaseDao implements Dao<Order> {
 
 		} catch (Exception e) {
 
-			e.printStackTrace();
+			//e.printStackTrace();
 			throw new DaoException("An error occurred deleting an order", e);
 		}
 	}

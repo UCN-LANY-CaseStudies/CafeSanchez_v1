@@ -12,41 +12,42 @@ import dataAccess.DaoException;
 import model.Product;
 
 public class ProductDao extends BaseDao implements Dao<Product> {
-	
+
 	@Override
 	public Product create(Product product) {
 		// not used
 		throw new DaoException("Create product is not available");
 	}
-	
+
 	@Override
-	public List<Product> read(){
-		
+	public List<Product> read() {
+
 		// call to database that gets all products from the Products table
-		
+
 		String sql = "SELECT * FROM Products ORDER BY Name";
 		ArrayList<Product> result = new ArrayList<>();
-		
+
 		try {
 			Connection conn = getConnection();
 			PreparedStatement statement = conn.prepareStatement(sql);
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
-			
+
 				String name = rs.getString(1);
 				String description = rs.getString(2);
 				float price = rs.getFloat(3);
-				
+
 				Product p = new Product(name, description, price);
 
-				result.add(p);				
+				result.add(p);
 			}
-			
-		} catch (SQLException e) {
 
-			e.printStackTrace();
-		}		
-		return result;
+			return result;
+
+		} catch (SQLException e) {
+			// e.printStackTrace();
+			throw new DaoException("An error occurred reading products", e);
+		}
 	}
 
 	@Override
