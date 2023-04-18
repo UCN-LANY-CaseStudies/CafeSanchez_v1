@@ -14,13 +14,13 @@ import model.Product;
 public class ProductDao extends BaseDao implements Dao<Product> {
 
 	@Override
-	public Product create(Product product) {
+	public Product create(Product product) throws DaoException {
 		// not used
 		throw new DaoException("Create product is not available");
 	}
 
 	@Override
-	public List<Product> read() {
+	public List<Product> read() throws DaoException {
 
 		// call to database that gets all products from the Products table
 
@@ -51,13 +51,13 @@ public class ProductDao extends BaseDao implements Dao<Product> {
 	}
 
 	@Override
-	public Product update(Product product) {
+	public Product update(Product product) throws DaoException {
 		// not used
 		throw new DaoException("Create product is not available");
 	}
 
 	@Override
-	public boolean delete(Product product) {
+	public boolean delete(Product product) throws DaoException {
 		// not used
 		throw new DaoException("Create product is not available");
 	}

@@ -4,35 +4,51 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import dataAccess.Dao;
+import dataAccess.DaoException;
 import model.Order;
 import model.Product;
 
 public class OrderHandlingController {
-	
+
 	private Dao<Order> orderDao;
 	private Dao<Product> productDao;
-	
-	public OrderHandlingController(Dao<Order> orderDao, Dao<Product> productDao) { 
-		
+
+	public OrderHandlingController(Dao<Order> orderDao, Dao<Product> productDao) {
+
 		this.productDao = productDao;
 		this.orderDao = orderDao;
 	}
 
-	public boolean createOrder(Order order) {
-		
-		Order createdOrder = orderDao.create(order);	
-		
-		return createdOrder.getStatus().equals(Order.STATUS_NEW);
+	public boolean createOrder(Order order) throws ControllerException {
+
+		try {
+			
+			Order createdOrder = orderDao.create(order);
+
+			return createdOrder.getStatus().equals(Order.STATUS_NEW);
+			
+		} catch (DaoException e) {
+
+			throw new ControllerException("An error occurred creating order", e);
+		}
 	}
 
-	public List<Product> getProducts() {
+	public List<Product> getProducts() throws ControllerException {
 
-		return  productDao.read();
+		try {
+
+			return productDao.read();
+
+		} catch (DaoException e) {
+
+			throw new ControllerException("An error occurred reading products", e);
+		}
 	}
-	
-	public boolean changeOrderState(Order order) {
 
-		switch (order.getStatus()) {
+	public boolean changeOrderState(Order order) throws ControllerException {
+
+		try {
+			switch (order.getStatus()) {
 			case Order.STATUS_NEW:
 				order.setStatus(Order.STATUS_ACTIVE);
 				break;
@@ -44,25 +60,34 @@ public class OrderHandlingController {
 				break;
 			default:
 				return false;
+			}
+			if (order.getStatus().equals(Order.STATUS_FINISHED)) {
+				orderDao.delete(order);
+			} else {
+				orderDao.update(order);
+			}
+			return true;
+		} catch (DaoException e) {
+
+			throw new ControllerException("An error occurred changing state on an order", e);
 		}
-		if(order.getStatus().equals(Order.STATUS_FINISHED)) {
-			orderDao.delete(order);
-		}	
-		else {
-			orderDao.update(order);			
-		}
-		return true;
 	}
 
-	public List<Order> getUnfinishedOrders() {
-		
-		List<Order> orders = orderDao.read();
-		
-		if(orders == null)
-			return null; 
-		
-		return orders.stream().filter(O -> !O.getStatus().equals(Order.STATUS_FINISHED)).collect(Collectors.toList());		
+	public List<Order> getUnfinishedOrders() throws ControllerException {
+
+		try {
+			List<Order> orders = orderDao.read();
+
+			if (orders == null)
+				return null;
+
+			return orders.stream().filter(O -> !O.getStatus().equals(Order.STATUS_FINISHED))
+					.collect(Collectors.toList());
+
+		} catch (DaoException e) {
+
+			throw new ControllerException("An error occurred reading active orders", e);
+		}
 	}
-	
 
 }

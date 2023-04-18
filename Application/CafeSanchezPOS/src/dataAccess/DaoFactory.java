@@ -12,7 +12,7 @@ public class DaoFactory {
 		this.factoryType = factoryType;
 	}
 
-	public Dao<Order> CreateOrderDao() {
+	public Dao<Order> CreateOrderDao() throws DaoException {
 
 		switch (this.factoryType) {
 		case Memory:
@@ -24,7 +24,7 @@ public class DaoFactory {
 		}
 	}
 
-	public Dao<Product> CreateProductDao() {
+	public Dao<Product> CreateProductDao() throws DaoException {
 
 		switch (this.factoryType) {
 		case Memory:

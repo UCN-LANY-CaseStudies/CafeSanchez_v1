@@ -4,16 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.util.List;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import businessLogic.OrderHandlingController;
 import model.Order;
-import model.OrderLine;
 import model.Product;
 
 public class MainWindow extends JFrame {
@@ -40,54 +36,107 @@ public class MainWindow extends JFrame {
 
 	private void changeOrderState() {
 
-		Executors.newSingleThreadExecutor().execute(new Runnable() {
-			@Override
-			public void run() {
-				Order selectedOrder = listActiveOrders.getSelectedValue();
-				if (selectedOrder != null && orderCtrl.changeOrderState(selectedOrder)) {
+		try {
+			Executors.newSingleThreadExecutor().execute(new Runnable() {
+				@Override
+				public void run() {
 
-					reloadOrders();
+					try {
+						Order selectedOrder = listActiveOrders.getSelectedValue();
+						if (selectedOrder != null && orderCtrl.changeOrderState(selectedOrder)) {
+
+							reloadOrders();
+						}
+					} catch (Exception e) {
+
+						// TODO Log error
+						// TODO Inform user
+
+						e.printStackTrace();
+					}
 				}
-			}
-		});
+			});
+			
+		} catch (Exception e) {
+
+			// TODO Log error
+			// TODO Inform user
+
+			e.printStackTrace();
+		}
 	}
 
 	private void openNewOrderDialog() {
 
-		List<Product> products = orderCtrl.getProducts();
+		try {
+			List<Product> products = orderCtrl.getProducts();
 
-		CreateOrderDialog dialog = new CreateOrderDialog(products);
-		dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		dialog.setVisible(true);
+			CreateOrderDialog dialog = new CreateOrderDialog(products);
+			dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
 
-		if (dialog.isAccepted()) {
+			if (dialog.isAccepted()) {
 
-			Executors.newSingleThreadExecutor().execute(new Runnable() {
+				Executors.newSingleThreadExecutor().execute(new Runnable() {
 
-				@Override
-				public void run() {
+					@Override
+					public void run() {
+						try {
 
-					Order order = new Order(dialog.getCustomerName());
-					order.setOrderLines(dialog.getOrderlines());
-					orderCtrl.createOrder(order);
+							Order order = new Order(dialog.getCustomerName());
+							order.setOrderLines(dialog.getOrderlines());
+							orderCtrl.createOrder(order);
 
-					reloadOrders();
-				}
-			});
+							reloadOrders();
+
+						} catch (Exception e) {
+
+							// TODO Log error
+							// TODO Inform user
+
+							e.printStackTrace();
+						}
+					}
+				});
+			}
+			
+		} catch (Exception e) {
+
+			// TODO Log error
+			// TODO Inform user
+
+			e.printStackTrace();
 		}
 	}
 
 	private void reloadOrders() {
 
-		Executors.newSingleThreadExecutor().execute(new Runnable() {
-			@Override
-			public void run() {
-				List<Order> activeOrders = orderCtrl.getUnfinishedOrders();
-				if (activeOrders != null)
-					listActiveOrders.setModel(GuiHelpers.mapToListModel(activeOrders));
-				// listActiveOrders.updateUI();
-			}
-		});
+		try {
+			Executors.newSingleThreadExecutor().execute(new Runnable() {
+				@Override
+				public void run() {
+
+					try {
+						List<Order> activeOrders = orderCtrl.getUnfinishedOrders();
+						if (activeOrders != null)
+							listActiveOrders.setModel(GuiHelpers.mapToListModel(activeOrders));
+					} catch (Exception e) {
+
+						// TODO Log error
+						// TODO Inform user
+
+						e.printStackTrace();
+					}
+				}
+			});
+			
+		} catch (Exception e) {
+
+			// TODO Log error
+			// TODO Inform user
+
+			e.printStackTrace();
+		}
 	}
 
 	private void initialize() {

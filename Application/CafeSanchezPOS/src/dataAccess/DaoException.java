@@ -1,6 +1,6 @@
 package dataAccess;
 
-public class DaoException extends RuntimeException {
+public class DaoException extends Exception {
 
 	private static final long serialVersionUID = 6246087753700132201L;
 

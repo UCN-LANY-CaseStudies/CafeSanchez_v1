@@ -22,8 +22,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 
-import businessLogic.OrderHandlingController;
-import model.Order;
 import model.OrderLine;
 import model.Product;
 

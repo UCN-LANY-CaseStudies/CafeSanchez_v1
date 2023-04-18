@@ -29,7 +29,7 @@ public class ProductDao implements Dao<Product>{
 	}
 
 	@Override
-	public Product create(Product product) {
+	public Product create(Product product) throws DaoException {
 		// Not needed
 		throw new DaoException("Create product is not available");
 	}
@@ -41,13 +41,13 @@ public class ProductDao implements Dao<Product>{
 	}
 
 	@Override
-	public Product update(Product product) {
+	public Product update(Product product) throws DaoException {
 		// Not needed
 		throw new DaoException("Update product is not available");
 	}
 
 	@Override
-	public boolean delete(Product product) {
+	public boolean delete(Product product) throws DaoException {
 		// Not needed
 		throw new DaoException("Delete product is not available");
 	}
