@@ -15,7 +15,7 @@ public abstract class BaseDao {
 		SQLServerDataSource ds = new SQLServerDataSource();
 		ds.setUser("sa");
 		ds.setPassword("P@$$w0rd");
-		ds.setServerName("192.168.56.101");
+		ds.setServerName("10.236.100.115");
 		ds.setDatabaseName("CafeSanchez_v1");
 		ds.setEncrypt("False");
 

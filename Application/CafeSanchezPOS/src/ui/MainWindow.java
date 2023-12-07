@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import businessLogic.ControllerException;
 import businessLogic.OrderHandlingController;
 import model.Order;
 import model.Product;
@@ -34,109 +35,65 @@ public class MainWindow extends JFrame {
 		reloadOrders();
 	}
 
-	private void changeOrderState() {
+	private void changeOrderState(JButton btn) {
+		btn.setEnabled(false);
+		Order selectedOrder = listActiveOrders.getSelectedValue();
 
-		try {
-			Executors.newSingleThreadExecutor().execute(new Runnable() {
-				@Override
-				public void run() {
+		new SwingWorker<Void, Void>() {
 
-					try {
-						Order selectedOrder = listActiveOrders.getSelectedValue();
-						if (selectedOrder != null && orderCtrl.changeOrderState(selectedOrder)) {
-
-							reloadOrders();
-						}
-					} catch (Exception e) {
-
-						// TODO Log error
-						// TODO Inform user
-
-						e.printStackTrace();
-					}
+			@Override
+			protected Void doInBackground() throws Exception {
+				if (selectedOrder != null) {
+					orderCtrl.changeOrderState(selectedOrder);
 				}
-			});
-			
-		} catch (Exception e) {
+				return null;
+			}
 
-			// TODO Log error
-			// TODO Inform user
+			@Override
+			protected void done() {
+				// Update GUI
+				listActiveOrders.updateUI();
+			}
 
-			e.printStackTrace();
-		}
+		}.execute();
 	}
 
 	private void openNewOrderDialog() {
 
-		try {
-			List<Product> products = orderCtrl.getProducts();
+		CreateOrderDialog dialog = new CreateOrderDialog(orderCtrl);
+		dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		dialog.setVisible(true);
 
-			CreateOrderDialog dialog = new CreateOrderDialog(products);
-			dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
+		if (dialog.isAccepted()) {
 
-			if (dialog.isAccepted()) {
-
-				Executors.newSingleThreadExecutor().execute(new Runnable() {
-
-					@Override
-					public void run() {
-						try {
-
-							Order order = new Order(dialog.getCustomerName());
-							order.setOrderLines(dialog.getOrderlines());
-							orderCtrl.createOrder(order);
-
-							reloadOrders();
-
-						} catch (Exception e) {
-
-							// TODO Log error
-							// TODO Inform user
-
-							e.printStackTrace();
-						}
-					}
-				});
-			}
-			
-		} catch (Exception e) {
-
-			// TODO Log error
-			// TODO Inform user
-
-			e.printStackTrace();
+			reloadOrders();
 		}
 	}
 
 	private void reloadOrders() {
 
-		try {
-			Executors.newSingleThreadExecutor().execute(new Runnable() {
-				@Override
-				public void run() {
+		new SwingWorker<Void, Void>(){
 
-					try {
-						List<Order> activeOrders = orderCtrl.getUnfinishedOrders();
-						if (activeOrders != null)
-							listActiveOrders.setModel(GuiHelpers.mapToListModel(activeOrders));
-					} catch (Exception e) {
+			@Override
+			protected Void doInBackground() throws Exception {
 
-						// TODO Log error
-						// TODO Inform user
+				try {
+					List<Order> activeOrders = orderCtrl.getUnfinishedOrders();
+					if (activeOrders != null)
+						listActiveOrders.setModel(GuiHelpers.mapToListModel(activeOrders));
+				
+				} catch (Exception e) {
 
-						e.printStackTrace();
-					}
+					// TODO Log error
+					// TODO Inform user
+
+					e.printStackTrace();
 				}
-			});
+				return null;
+			}
 			
-		} catch (Exception e) {
-
-			// TODO Log error
-			// TODO Inform user
-
-			e.printStackTrace();
-		}
+			
+		}.execute();		
 	}
 
 	private void initialize() {
@@ -182,20 +139,19 @@ public class MainWindow extends JFrame {
 		// process order button
 		btnProcessOrder = new JButton("Process");
 		btnProcessOrder.setEnabled(false);
-		btnProcessOrder.addActionListener(e -> changeOrderState());
+		btnProcessOrder.addActionListener(e -> changeOrderState(btnProcessOrder));
 		panel.add(btnProcessOrder);
 
 		// order ready
 		btnOrderReady = new JButton("Ready");
 		btnOrderReady.setEnabled(false);
-		btnOrderReady.addActionListener(e -> changeOrderState());
+		btnOrderReady.addActionListener(e -> changeOrderState(btnOrderReady));
 		panel.add(btnOrderReady);
 
 		// finish order button
 		btnFinishOrder = new JButton("Finish");
 		btnFinishOrder.setEnabled(false);
-		btnFinishOrder.addActionListener(e -> changeOrderState());
+		btnFinishOrder.addActionListener(e -> changeOrderState(btnFinishOrder));
 		panel.add(btnFinishOrder);
-
 	}
 }

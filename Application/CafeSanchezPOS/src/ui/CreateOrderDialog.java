@@ -21,7 +21,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
+import businessLogic.ControllerException;
+import businessLogic.OrderHandlingController;
+import model.Order;
 import model.OrderLine;
 import model.Product;
 
@@ -42,29 +47,45 @@ public class CreateOrderDialog extends JDialog {
 	private JButton btnAddProduct;
 	private JButton btnOk;
 	private JButton btnCancel;
-	
-	public String getCustomerName() {
-		return txtCustomerName.getText();
-	}
-	
-	public List<OrderLine> getOrderlines(){
-		
-		ArrayList<OrderLine> result = new ArrayList<>();
-		
-		for (int i = 0; i < lstOrderlines.getModel().getSize(); i++) {
-			OrderLine current = lstOrderlines.getModel().getElementAt(i);
-			result.add(current);
-		}
-		
-		return result;
-	}
 
-	public CreateOrderDialog(List<Product> products) {
+//	public List<OrderLine> getOrderlines() {
+//
+//		ArrayList<OrderLine> result = new ArrayList<>();
+//
+//		for (int i = 0; i < lstOrderlines.getModel().getSize(); i++) {
+//			OrderLine current = lstOrderlines.getModel().getElementAt(i);
+//			result.add(current);
+//		}
+//
+//		return result;
+//	}
 
+	private OrderHandlingController orderHandlingController;
+
+	public CreateOrderDialog(OrderHandlingController orderHandlingController) {
+
+		this.orderHandlingController = orderHandlingController;
 		initialize();
+		updateUI();
+	}
 
-		cboProducts.setModel(GuiHelpers.mapToComboBoxModel(products));
-		lstOrderlines.setModel(new DefaultListModel<OrderLine>());
+	@Override
+	public void setVisible(boolean b) {
+
+		boolean visible = b;
+		try {
+
+			List<Product> products = orderHandlingController.getProducts();
+
+			cboProducts.setModel(GuiHelpers.mapToComboBoxModel(products));
+			lstOrderlines.setModel(new DefaultListModel<OrderLine>());
+
+		} catch (ControllerException e) {
+
+			visible = false;
+			e.printStackTrace(); 
+		}
+		super.setVisible(visible);
 	}
 
 	private void addSelectedProductToOrder() {
@@ -81,27 +102,16 @@ public class CreateOrderDialog extends JDialog {
 				current.setQuantity(current.getQuantity() + 1);
 			}
 			orderlines.add(current);
+
 		}
 		if (!itemAdded) {
 			OrderLine ol = new OrderLine(1, product);
 			orderlines.add(ol);
 		}
 		lstOrderlines.setModel(GuiHelpers.mapToListModel(orderlines));
-		//lstOrderlines.updateUI();
 
 		calculateTotalPrice();
-	}
-
-	private void calculateTotalPrice() {
-		float result = 0;
-		
-		for (int i = 0; i < lstOrderlines.getModel().getSize(); i++) {
-			OrderLine current = lstOrderlines.getModel().getElementAt(i);
-			result += current.getQuantity() * current.getProduct().getPrice();
-		}
-		
-		NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance();
-		txtTotalPrice.setText(currencyFormatter.format(result));
+		updateUI();
 	}
 
 	private void cancel() {
@@ -112,42 +122,57 @@ public class CreateOrderDialog extends JDialog {
 
 	private void ok() {
 
+		disableUI();
+		String customerName = txtCustomerName.getText();
+		List<OrderLine> orderLines = new ArrayList<OrderLine>();
+
+		for (int i = 0; i < lstOrderlines.getModel().getSize(); i++) {
+			orderLines.add(lstOrderlines.getModel().getElementAt(i));
+		}
+
+		if (orderLines.isEmpty() || customerName.isEmpty())
+			return;
+
+		Order order = new Order(customerName);
+		order.setOrderLines(orderLines);
+
+		try {
+
+			orderHandlingController.createOrder(order);
+
+		} catch (ControllerException e) {
+			e.printStackTrace();
+		}
+		this.setVisible(false);
 		this.accepted = true;
-		setVisible(false);
 	}
 
 	public boolean isAccepted() {
 		return accepted;
 	}
 
-	public class OrderLineCellRenderer implements ListCellRenderer<OrderLine> {
+	private void calculateTotalPrice() {
+		float result = 0;
 
-		DefaultListCellRenderer renderer = new DefaultListCellRenderer();
-
-		@Override
-		public Component getListCellRendererComponent(JList<? extends OrderLine> list, OrderLine value, int index,
-				boolean isSelected, boolean cellHasFocus) {
-
-			String cellText = value.getQuantity() + " " + value.getProduct().getName();
-
-			return renderer.getListCellRendererComponent(list, cellText, index, isSelected, cellHasFocus);
+		for (int i = 0; i < lstOrderlines.getModel().getSize(); i++) {
+			OrderLine current = lstOrderlines.getModel().getElementAt(i);
+			result += current.getQuantity() * current.getProduct().getPrice();
 		}
+
+		NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance();
+		txtTotalPrice.setText(currencyFormatter.format(result));
 	}
 
-	public class ProductCellRenderer implements ListCellRenderer<Product> {
+	private void updateUI() {
 
-		DefaultListCellRenderer renderer = new DefaultListCellRenderer();
-
-		@Override
-		public Component getListCellRendererComponent(JList<? extends Product> list, Product value, int index,
-				boolean isSelected, boolean cellHasFocus) {
-
-			String renderedText = "";
-			if (value != null) {
-				renderedText = value.getName();
-			}
-			return renderer.getListCellRendererComponent(list, renderedText, index, isSelected, cellHasFocus);
-		}
+		boolean enableOkButton = !txtCustomerName.getText().isBlank() && lstOrderlines.getModel().getSize() > 0;
+		btnOk.setEnabled(enableOkButton);
+	}
+	
+	private void disableUI() {
+		
+		btnOk.setEnabled(false);
+		btnCancel.setEnabled(false);		
 	}
 
 	private void initialize() {
@@ -173,7 +198,23 @@ public class CreateOrderDialog extends JDialog {
 		txtCustomerName = new JTextField();
 		txtCustomerName.setColumns(10);
 		txtCustomerName.setBounds(110, 27, 150, 20);
+		txtCustomerName.getDocument().addDocumentListener(new DocumentListener() {
+			
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				updateUI();
+			}
 
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				updateUI();
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				updateUI();
+			}
+		});
 		contentPane.add(txtCustomerName);
 
 		// order items
@@ -244,5 +285,35 @@ public class CreateOrderDialog extends JDialog {
 		});
 		buttonPane.add(btnCancel);
 
+	}
+
+	class OrderLineCellRenderer implements ListCellRenderer<OrderLine> {
+
+		DefaultListCellRenderer renderer = new DefaultListCellRenderer();
+
+		@Override
+		public Component getListCellRendererComponent(JList<? extends OrderLine> list, OrderLine value, int index,
+				boolean isSelected, boolean cellHasFocus) {
+
+			String cellText = value.getQuantity() + " " + value.getProduct().getName();
+
+			return renderer.getListCellRendererComponent(list, cellText, index, isSelected, cellHasFocus);
+		}
+	}
+
+	class ProductCellRenderer implements ListCellRenderer<Product> {
+
+		DefaultListCellRenderer renderer = new DefaultListCellRenderer();
+
+		@Override
+		public Component getListCellRendererComponent(JList<? extends Product> list, Product value, int index,
+				boolean isSelected, boolean cellHasFocus) {
+
+			String renderedText = "";
+			if (value != null) {
+				renderedText = value.getName();
+			}
+			return renderer.getListCellRendererComponent(list, renderedText, index, isSelected, cellHasFocus);
+		}
 	}
 }

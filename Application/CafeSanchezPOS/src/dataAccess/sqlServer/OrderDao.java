@@ -26,7 +26,7 @@ public class OrderDao extends BaseDao implements Dao<Order> {
 			Connection conn = getConnection();
 
 			String selectOrdersSql = "SELECT CustomerName, Status, Date FROM Orders ";
-			String selectOrderLinesSql = "SELECT Products.Name, Products.Description, Products.Price, Quantity "
+			String selectOrderLinesSql = "SELECT Products.Name, Products.Description, Products.Price, Quantity " 
 					+ "FROM Orderlines JOIN Products ON Products.Name = Orderlines.ProductName "
 					+ "WHERE OrderCustomerName = ? ";
 

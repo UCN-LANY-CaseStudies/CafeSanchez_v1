@@ -48,6 +48,9 @@ public class OrderHandlingController {
 	public boolean changeOrderState(Order order) throws ControllerException {
 
 		try {
+			
+			Thread.sleep(3000);
+			
 			switch (order.getStatus()) {
 			case Order.STATUS_NEW:
 				order.setStatus(Order.STATUS_ACTIVE);
@@ -67,7 +70,7 @@ public class OrderHandlingController {
 				orderDao.update(order);
 			}
 			return true;
-		} catch (DaoException e) {
+		} catch (Exception e) {
 
 			throw new ControllerException("An error occurred changing state on an order", e);
 		}

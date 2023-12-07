@@ -1,10 +1,11 @@
-package ui;
+
 
 import businessLogic.OrderHandlingController;
 import dataAccess.Dao;
 import dataAccess.DaoFactory;
 import model.Order;
 import model.Product;
+import ui.MainWindow;
 
 public class Program {
 
